@@ -1,0 +1,30 @@
+modules:
+  error-page:
+    title-not-exist: The page you visited does not exist
+    title-not-disconnect: Room disconnected
+    title-room-not-exist: Room does not exist
+    btn: Back to home
+
+pages:
+  login:
+    login: Login
+    forget-password: Forgot password ?
+    input-password: Input password
+    input-phone-or-email: Phone userId / Email
+    input-email: Input Email
+  home:
+    all-doc: All Document
+    my-created: I Created
+    share-to-me: Share To Me
+    recycle-bin: Recycle Bin
+    my-doc: My Document
+    search-input: Link / Doc Name
+    account-setting: Account Set
+    user-name: Name
+
+  player:
+    broadcaster-perspective: Broadcaster Perspective
+    menu-title: Replay list
+    freedom-perspective: Freedom Perspective
+    notification-title: Playback function Beta release notes
+    notification-inner: White will

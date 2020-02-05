@@ -1,0 +1,17 @@
+modules:
+
+  global:
+    white: White
+    slogan: 让想法同步。
+    copy: 复制
+    copy-fail: 复制失败！
+    copy-success: 已经成功复制到剪贴板！
+    unnamed: 未命名
+    cancel: 取消
+    default-room-name: 未命名
+
+pages:
+
+  home:
+    all-doc: 全部文档
+    my-created: 我创建的

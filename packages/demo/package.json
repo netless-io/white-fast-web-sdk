@@ -1,0 +1,59 @@
+{
+  "name": "netless-rtc-react-whiteboard",
+  "version": "1.1.0",
+  "main": "./main.js",
+  "author": "Wushuang",
+  "license": "MIT",
+  "proxy": "http://localhost:3009/",
+  "scripts": {
+    "dev": "react-app-rewired start --scripts-version react-scripts-ts",
+    "build": "rimraf build && NODE_ENV=production react-app-rewired --max-old-space-size=4096 build --scripts-version react-scripts-ts",
+    "build:app": "rm -rf ./dist && electron-builder build --win --x64 && electron-builder build --mac --x64"
+  },
+  "build": {
+    "appId": "netless",
+    "directories": {
+      "buildResources": "resources"
+    },
+    "files": [
+      "package.json",
+      "main.js",
+      "resources/icon.*"
+    ]
+  },
+  "dependencies": {
+    "@netless/fetch-middleware": "^1.0.4",
+    "@netless/i18n-react-router": "^1.0.6",
+    "@netless/white-fast-web-sdk": "^1.2.5",
+    "agora-rtc-sdk": "2.9.0",
+    "ali-oss": "^6.1.1",
+    "antd": "^3.24.3",
+    "react": "~16.8.0",
+    "react-dom": "~16.8.0",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "uuid": "^3.3.2",
+    "webrtc-zego": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/ali-oss": "^6.0.3",
+    "@types/js-yaml": "^3.11.2",
+    "@types/node": "^11.12.2",
+    "@types/query-string": "5",
+    "@types/react": "^16.4.12",
+    "@types/react-dom": "^16.0.5",
+    "@types/uuid": "^3.4.4",
+    "@types/video.js": "^7.2.10",
+    "fork-ts-checker-webpack-plugin": "^1.3.4",
+    "js-yaml": "^3.12.0",
+    "react-app-rewire-define-plugin": "^1.0.0",
+    "react-app-rewire-less": "^2.1.1",
+    "react-app-rewire-yaml": "^1.1.0",
+    "react-app-rewired": "^1.5.2",
+    "react-scripts-ts": "^2.16.0",
+    "rimraf": "^2.6.3",
+    "ts-import-plugin": "^1.5.0",
+    "tslint": "^5.9.1",
+    "typescript": "^3.5.1"
+  }
+}

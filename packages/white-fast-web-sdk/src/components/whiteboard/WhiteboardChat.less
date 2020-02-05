@@ -1,0 +1,142 @@
+@import "../../../theme";
+
+.chat-box {
+  width: 300px;
+  height: 100%;
+  overflow: auto;
+  flex-shrink: 0;
+  border-left: 1px solid #F2F2F2;
+}
+
+.chat-box-mask {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  z-index: 3000;
+  top: 0;
+  left: 0;
+}
+
+.chat-inner-box {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-inner-box-player {
+  width: 100%;
+  height: calc(~'100vh - 300px');;
+  display: flex;
+  flex-direction: column;
+}
+.chat-box-title {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #F2F2F2;
+  flex-shrink: 0;
+}
+
+.chat-box-name {
+  margin-left: 12px;
+  font-weight: bold;
+}
+.bm-cross-button {
+  button {
+    display: none;
+  }
+}
+
+.chat-box-switch {
+  .ant-tabs-tab {
+    width: 134px;
+    text-align: center;
+  }
+}
+
+.manager-box-mask-close {
+  width: 0;
+}
+
+.guest-box {
+  height: calc(~'100vh - 360px');
+  overflow-y: scroll;
+  position: relative;
+}
+
+.guest-box-btn {
+  width: 300px;
+  height: 42px;
+  background-color: @main_color;
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  color: white;
+  text-align: center;
+  line-height: 42px;
+  cursor: pointer;
+}
+
+.chat-box-close {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  right: 12px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  .main-duration;
+  &:hover {
+    .main-duration;
+    cursor: pointer;
+    background-color: #F2F2F2;
+  }
+  img {
+    cursor: pointer;
+    width: 18px;
+  }
+}
+
+.chat-box-message {
+  height: 100%;
+}
+
+.chat-box-message-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-shrink: 0;
+  img {
+    margin-bottom: 12px;
+  }
+  div {
+    opacity: 0.7;
+  }
+}
+
+.chat-box-input {
+  z-index: 2;
+  width: 100%;
+  //flex-shrink: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+  flex: 0 1 auto;
+  textarea {
+    margin-top: 4.5px;
+  }
+}
+
+.under-cell {
+  width: 100%;
+  height: 42px;
+}

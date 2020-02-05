@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="26px" viewBox="0 0 25 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>chat</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="chat" transform="translate(12.500000, 13.000000) scale(-1, 1) translate(-12.500000, -13.000000) " fill="#A2A7AD" fill-rule="nonzero">
+            <g id="下载" transform="translate(12.500000, 13.000000) scale(-1, 1) translate(-12.500000, -13.000000) ">
+                <g id="chat" transform="translate(12.500000, 13.000000) scale(-1, 1) translate(-12.500000, -13.000000) ">
+                    <path d="M12.5,0 C19.4036119,0 25,5.8202436 25,13 C25,20.1797565 19.4036119,26 12.5,26 L1.49997,26 C1.10215322,26 0.720629983,25.8356466 0.439331041,25.5430958 C0.1580321,25.2505448 0,24.8537607 0,24.4400313 L0,13 C0,5.8202436 5.59638806,0 12.5,0 Z M6,15 L6,18 L13,18 L13,15 L6,15 Z M6,10 L6,13 L18,13 L18,10 L6,10 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

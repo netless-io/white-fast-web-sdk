@@ -1,0 +1,153 @@
+@import "../../../theme";
+
+.whiteboard-box-bottom-left {
+    position: absolute;
+    z-index: 10;
+    left: 8px;
+    bottom: 40px;
+    height: 0;
+}
+
+.whiteboard-box-mid {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ppt-popover {
+  width: 288px;
+  height: 88px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  overflow: hidden;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.ppt-popover-cell {
+  width: 96px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: white;
+  .main-duration;
+  flex-direction: column;
+  &:hover {
+    .main-duration;
+    background-color: #F5F5F5;
+  }
+}
+
+.ppt-popover-icon {
+  height: 48px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ppt-popover-title {
+  font-size: 12px;
+}
+
+.whiteboard-click-icon {
+  width: 28px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  cursor: pointer;
+  img {
+    width: 14px;
+  }
+}
+
+.whiteboard-box-bottom-left-chart {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  img {
+    width: 16px;
+  }
+}
+.whiteboard-box-bottom-left-chart-2 {
+  height: 32px;
+  background-color: white;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding-left: 12px;
+  img {
+    width: 16px;
+  }
+}
+
+.whiteboard-box-bottom-left-player {
+  width: 32px;
+  height: 32px;
+  margin-left: 4px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+  .hover-transition;
+  img {
+    margin-left: 4px;
+  }
+  &:hover {
+    .hover-transition;
+    background-color: @white_nearly;
+  }
+}
+
+.whiteboard-box-bottom-left-player-mb {
+  width: 32px;
+  height: 32px;
+  margin-left: 4px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  .hover-transition;
+  position: fixed;
+  left: 96px;
+  top: 8px;
+  z-index: 4;
+  img {
+    margin-left: 4px;
+  }
+}
+
+.whiteboard-box-bottom-left-cell {
+  width: 32px;
+  height: 32px;
+  margin-left: 4px;
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+  .hover-transition;
+  &:hover {
+    .hover-transition;
+    background-color: @white_nearly;
+  }
+}

@@ -1,0 +1,160 @@
+@import "../../../theme";
+
+.manager-box {
+  width: 300px;
+  height: 100%;
+  overflow: auto;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.manager-box-mask {
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  z-index: 3000;
+  top: 0;
+  left: 0;
+}
+
+.manager-under-btn {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  img {
+    width: 18px;
+  }
+}
+
+.manager-avatar-box {
+  height: 28px;
+  width: 28px;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #5B908E;
+  margin-right: 8px;
+}
+
+#rtc_local_stream {
+  border: 3px solid #5B908E;
+}
+
+.manager-box-inner-host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  background-color: #3C3F41;
+  position: relative;
+}
+
+.manager-box-inner-host2 {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  position: relative;
+}
+.manager-box-text {
+  font-weight: bold;
+  margin-top: 2px;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.manager-box-controller {
+  width: 136px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.manager-box-cell {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.manager-box-btn {
+  position: absolute;
+  left: 16px;
+  top: 8px;
+}
+
+.manager-box-btn-hang {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.manager-box-btn-right {
+  position: absolute;
+  right: 16px;
+  top: 8px;
+  z-index: 101;
+}
+
+.manager-box-btn-right-inner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  .main-duration;
+  cursor: pointer;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  background-color: #3C3F41;
+  opacity: 0.6;
+  &:hover {
+    .main-duration;
+    background-color: black;
+
+  }
+  img {
+    width: 16px;
+  }
+}
+.manager-box-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
