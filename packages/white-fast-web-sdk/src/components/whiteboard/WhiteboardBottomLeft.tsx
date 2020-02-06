@@ -54,10 +54,6 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
             return null;
         }
     }
-    private isHavePpt = (): boolean => {
-        const {roomState} = this.props;
-        return !!(roomState.globalState && (roomState.globalState as any).h5PptUrl);
-    }
 
     private handlePptClick = (): void => {
         if (roomStore.boardPointerEvents === "auto") {
@@ -70,7 +66,6 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
     private deletePptUrl = (): void => {
         this.props.room.setGlobalState({h5PptUrl: ""});
         roomStore.boardPointerEvents = "auto";
-        roomStore.isScreenZoomLock = false;
     }
 
     private renderPptPopover = (): React.ReactNode => {
@@ -120,12 +115,6 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
         return (
             <div className="whiteboard-box-bottom-left">
                 <div className="whiteboard-box-mid">
-                    {/* {this.isHavePpt() &&
-                    <Popover title={"H5 课件操作"} placement="topLeft" content={this.renderPptPopover()} trigger="hover">
-                        <div onClick={this.handlePptClick} className="whiteboard-click-icon">
-                            {roomStore.boardPointerEvents === "auto" ? <img src={click_icon}/> : <img src={click_icon_black}/>}
-                        </div>
-                    </Popover>} */}
                     {this.renderFileIcon()}
                     <ScaleController
                         roomState={roomState}

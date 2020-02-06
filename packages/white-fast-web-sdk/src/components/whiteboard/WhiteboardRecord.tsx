@@ -9,7 +9,7 @@ import {Room, RoomState} from "white-web-sdk";
 import video_record from "../../assets/image/video_record.svg";
 import whiteboard_record from "../../assets/image/whiteboard_record.svg";
 import player_green from "../../assets/image/player_green.svg";
-import {RecordDataType, RtcType} from "../../pages/NetlessRoomTypes";
+import {RtcType} from "../../pages/NetlessRoomTypes";
 import {roomStore} from "../../models/RoomStore";
 import {observer} from "mobx-react";
 
@@ -377,8 +377,8 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                 >
                     <div className="record-select-box">
                         <div onClick={() => {
-                            if (roomStore.startRtc) {
-                                roomStore.startRtc();
+                            if (roomStore.startRtc && roomStore.startRecord) {
+                                roomStore.startRtc(true);
                                 this.setState({isRecordModalVisible: false});
                             }
                         }} className="record-select-cell">

@@ -9,7 +9,7 @@ export class RoomStore {
     @observable
     public h5PptUrl: string = "";
     @observable
-    public startRtc: (() => void) | null;
+    public startRtc: ((shouldRecord?: boolean) => void) | null;
     @observable
     public stopRtc: (() => void) | null;
     @observable
@@ -22,8 +22,6 @@ export class RoomStore {
     public isRecording: boolean = false;
     @observable
     public isRtcOpen: boolean = false;
-    @observable
-    public isScreenZoomLock: boolean = false;
     @observable
     public isInputH5Visible: boolean = false;
     @observable

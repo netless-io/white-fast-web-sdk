@@ -153,20 +153,8 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
             return nodes;
         }
     }
-
-    private isHavePpt = (): boolean => {
-        const {roomState} = this.props;
-        const isHave = !!(roomState.globalState && (roomState.globalState as any).h5PptUrl);
-        if (isHave) {
-            roomStore.isScreenZoomLock = true;
-        }
-        return isHave;
-    }
     private detectToolboxState = (): DisplayProperty => {
         const {isReadOnly} = this.props;
-        // if (!this.isHavePpt()) {
-        //     return "flex";
-        // }
         if (isReadOnly || roomStore.boardPointerEvents === "none") {
             return "none";
         } else {

@@ -39,7 +39,6 @@ import WhiteboardRecord from "../components/whiteboard/WhiteboardRecord";
 import "./NetlessRoom.less";
 import {RoomFacadeObject} from "../facade/Facade";
 import * as default_cover from "../assets/image/default_cover.svg";
-import WebPpt from "./WebPpt";
 import {roomStore} from "../models/RoomStore";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
@@ -606,9 +605,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
         }
     }
 
-    private handleScreenLock = (room: Room): void => {
-        room.disableCameraTransform = roomStore.isScreenZoomLock;
-    }
     public render(): React.ReactNode {
         const {phase, connectedFail, room, roomState} = this.state;
         const {loadingSvgUrl} = this.props;
@@ -635,7 +631,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             const isReadOnly = this.detectIsReadOnly(roomState, room);
             const cameraState = this.getCameraState(roomState);
             const disableCameraTransform = this.getDisableCameraTransformState(roomState);
-            this.handleScreenLock(room);
             return (
                 <RoomContextProvider value={{
                     onColorArrayChange: this.props.colorArrayStateCallback,
@@ -741,7 +736,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                                 ref={this.setWhiteboardLayerDownRef}>
                                 <RoomWhiteboard room={room} style={{width: "100%", height: "100%"}}/>
                             </div>
-                            <WebPpt roomState={roomState} identity={this.props.identity} ppt={(room.state.globalState as any).ppt} room={room}/>
                         </Dropzone>
                         {!isMobile &&
                         <WhiteboardManager

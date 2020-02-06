@@ -13,7 +13,7 @@ import * as camera_open from "../../assets/image/camera_open.svg";
 import * as camera_close from "../../assets/image/camera_close.svg";
 import ClassroomMediaManager from "./ClassroomMediaManager";
 import Identicon from "@netless/identicon";
-import {ClassModeType, IdentityType, LanguageEnum, RtcType, RtcEnum} from "../../pages/NetlessRoomTypes";
+import {ClassModeType, IdentityType, RtcType, RtcEnum} from "../../pages/NetlessRoomTypes";
 import {roomStore} from "../../models/RoomStore";
 import {observer} from "mobx-react";
 import { getEasySDK } from "../../utils/SilverRoom";
@@ -687,7 +687,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
         }
     }
 
-    private startRtc = async () => {
+    private startRtc = async (shouldRecord?: boolean) => {
         const {rtc, classMode, userId, channelId, identity} = this.props;
         if (rtc) {
             let token: string | number[] = "";
@@ -718,7 +718,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                             console.log("User " + uid + " join channel successfully");
                             // 创建本地流对象
                             if (identity === IdentityType.host) {
-                                this.createLocalStream(userId, identity);
+                                this.createLocalStream(userId, identity, shouldRecord);
                             } else if (identity === IdentityType.guest) {
                                 if (classMode === ClassModeType.discuss) {
                                     this.createLocalStream(userId);
@@ -750,7 +750,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                     this.setMediaState(true);
                     this.addZegoListeners();
                     this.setState({ isRtcStart: true, isRtcLoading: false, streams: streams ? streams.map((t: any) => this.convertZegoStream(t)) : [] }, () => {
-                        this.createLocalStream(userId, streams);
+                        this.createLocalStream(userId);
                     });
                     roomStore.isRtcOpen = true;
                 }
@@ -836,7 +836,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
         }
     }
 
-    private createLocalStream = (userId: number, identity?: IdentityType): void => {
+    private createLocalStream = (userId: number, identity?: IdentityType, shouldRecord?: boolean): void => {
         const { rtc } = this.props;
         if (!rtc) { return; }
         const { rtcObj, type } = rtc as RtcType;
@@ -861,6 +861,9 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                         localStream: localStream});
                     if (identity === IdentityType.host) {
                         roomStore.isRtcOpen = true;
+                        if (shouldRecord && roomStore.startRecord) {
+                            roomStore.startRecord();
+                        }
                     }
                 }, (err: any) => {
                     console.log("getUserMedia failed", err);
