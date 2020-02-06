@@ -29,7 +29,6 @@ export type HostUserType = {
     secondsElapsed?: number,
     avatar?: string,
     name?: string,
-    isVideoFullScreen?: boolean,
     isRecording?: boolean,
 };
 
