@@ -10,7 +10,7 @@ import WhiteboardChat from "./WhiteboardChat";
 import {MessageType} from "./WhiteboardBottomRight";
 import ClassroomMedia from "./ClassroomMedia";
 import Identicon from "@netless/identicon";
-import {ClassModeType, IdentityType, LanguageEnum, RtcType} from "../../pages/NetlessRoomTypes";
+import {ClassModeType, IdentityType, RtcType} from "../../pages/NetlessRoomTypes";
 import { observer } from "mobx-react";
 import { projectStore } from "../../models/ProjectStore";
 const { TabPane } = Tabs;

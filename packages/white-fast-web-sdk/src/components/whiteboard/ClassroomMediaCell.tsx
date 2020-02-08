@@ -4,10 +4,9 @@ import {NetlessStream} from "./ClassroomMedia";
 import * as microphone_open from "../../assets/image/microphone_open.svg";
 import * as microphone_close from "../../assets/image/microphone_close.svg";
 import Identicon from "../../tools/identicon/Identicon";
-import {ClassModeType, RtcEnum} from "../../pages/NetlessRoomTypes";
+import {ClassModeType} from "../../pages/NetlessRoomTypes";
 import {roomStore} from "../../models/RoomStore";
 export type ClassroomManagerCellProps = {
-    rtcType: RtcEnum;
     stream: NetlessStream;
     userId: number;
     rtcClient: any;
@@ -34,17 +33,9 @@ export default class ClassroomMediaCell extends React.Component<ClassroomManager
     }
 
     private startStream = (stream: NetlessStream): void => {
-        switch (this.props.rtcType) {
-            case "agora": {
-                const streamId = stream.getId();
-                this.publishLocalStream(stream);
-                stream.play(`netless-${streamId}`);
-                break;
-            }
-            default: {
-                break;
-            }
-        }
+        const streamId = stream.getId();
+        this.publishLocalStream(stream);
+        stream.play(`netless-${streamId}`);
     }
 
     private release = (): void => {
@@ -57,16 +48,8 @@ export default class ClassroomMediaCell extends React.Component<ClassroomManager
     }
 
     private stopStream = (stream: NetlessStream): void => {
-        switch (this.props.rtcType) {
-            case "agora": {
-                if (stream.isPlaying()) {
-                    stream.stop();
-                }
-                break;
-            }
-            default: {
-                break;
-            }
+        if (stream.isPlaying()) {
+            stream.stop();
         }
     }
 
@@ -152,30 +135,9 @@ export default class ClassroomMediaCell extends React.Component<ClassroomManager
         }
     }
 
-    private zegoSDKDetect = () => this.props.rtcType === "zego";
-    private agoraSDKDetect = () => this.props.rtcType === "agora";
-
-    private setUpVideoRef (ref: HTMLVideoElement): void {
-        this.videoEl = ref;
-    }
     public render(): React.ReactNode {
-        const {stream, rtcType, isLocalStreamPublish} = this.props;
-        const isZegoSDK = this.zegoSDKDetect();
-        const isAgoraSDK = this.agoraSDKDetect();
-
-        const zegoVideoNode = <video
-            ref={this.setUpVideoRef.bind(this)}
-            autoPlay
-            playsInline
-            onClick={() => this.handleClickVideo(streamId)}
-            style={{ objectFit: "cover", background: "#000" }}
-            className="rtc-media-cell-box"
-            muted={isLocalStreamPublish}
-        />;
-        const streamId = {
-            "zego": stream.streamId,
-            "agora": stream.getId(),
-        }[rtcType] || "";
+        const {stream} = this.props;
+        const streamId = stream.getId();
 
         if (stream.state.isInStage) {
             return (
@@ -185,8 +147,7 @@ export default class ClassroomMediaCell extends React.Component<ClassroomManager
                             {stream.state.isAudioOpen ? <img src={microphone_open}/> : <img src={microphone_close}/>}
                         </div>
                         {!stream.state.isVideoOpen && this.renderStageAvatar()}
-                        {isAgoraSDK && <div id={`netless-${streamId}`} className="rtc-media-stage-box" />}
-                        {isZegoSDK && zegoVideoNode}
+                        <div id={`netless-${streamId}`} className="rtc-media-stage-box" />
                     </div>
                 </div>
             );
@@ -198,8 +159,7 @@ export default class ClassroomMediaCell extends React.Component<ClassroomManager
                             {stream.state.isAudioOpen ? <img src={microphone_open}/> : <img src={microphone_close}/>}
                         </div>
                         {!stream.state.isVideoOpen && this.renderAvatar()}
-                        {isAgoraSDK && <div id={`netless-${streamId}`} onClick={() => this.handleClickVideo(streamId)} className="rtc-media-cell-box" />}
-                        {isZegoSDK && zegoVideoNode}
+                        <div id={`netless-${streamId}`} onClick={() => this.handleClickVideo(streamId)} className="rtc-media-cell-box" />
                     </div>
                 </div>
             );

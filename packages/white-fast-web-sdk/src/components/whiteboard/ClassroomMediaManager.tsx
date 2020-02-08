@@ -2,10 +2,9 @@ import * as React from "react";
 import {NetlessStream} from "./ClassroomMedia";
 import ClassroomMediaCell from "./ClassroomMediaCell";
 import "./ClassroomMediaManager.less";
-import {ClassModeType, IdentityType, RtcEnum} from "../../pages/NetlessRoomTypes";
+import {ClassModeType, IdentityType} from "../../pages/NetlessRoomTypes";
 
 export type ClassroomMediaManagerProps = {
-    rtcType: RtcEnum;
     streams: NetlessStream[];
     userId: number;
     classMode: ClassModeType;
@@ -46,7 +45,6 @@ export default class ClassroomMediaManager extends React.Component<ClassroomMedi
             return streams.map((stream: NetlessStream, index: number) => {
                 return <ClassroomMediaCell setLocalStreamState={this.props.setLocalStreamState}
                                            key={`${stream.getId()}`}
-                                           rtcType={this.props.rtcType}
                                            streamIndex={index}
                                            mediaLayerDownRef={mediaLayerDownRef}
                                            classMode={this.props.classMode}
