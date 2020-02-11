@@ -31,7 +31,7 @@ export type WhiteAudioPluginStates = {
 };
 
 export type SelfUserInf = {
-    identity: IdentityType,
+    identity?: IdentityType,
 };
 
 export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPluginProps, WhiteAudioPluginStates> {
@@ -97,9 +97,9 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     private setMyIdentityRoom = (): void => {
         const {plugin} = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             this.selfUserInf = {
-                identity: this.props.plugin.context.identity,
+                identity: plugin.context.identity,
             };
         }
     }
@@ -227,7 +227,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     private detectAudioClickEnable = (): any => {
         const { plugin } = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity !== IdentityType.host) {
                 return "none";
             } else {
@@ -239,18 +239,22 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
     private renderMuteBox = (): React.ReactNode => {
         const { plugin } = this.props;
-        if (plugin.context.identity !== IdentityType.host) {
-            if (this.state.selfMute) {
-                return (
-                    <div className="media-mute-box">
-                        <div onClick={() => {
-                            this.setState({ selfMute: false });
-                        }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
-                            <img src={mute_icon} />
-                            <span>unmute</span>
+        if (plugin.context && plugin.context.identity) {
+            if (plugin.context.identity !== IdentityType.host) {
+                if (this.state.selfMute) {
+                    return (
+                        <div className="media-mute-box">
+                            <div onClick={() => {
+                                this.setState({ selfMute: false });
+                            }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
+                                <img src={mute_icon} />
+                                <span>unmute</span>
+                            </div>
                         </div>
-                    </div>
-                );
+                    );
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
@@ -261,7 +265,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     private renderDeleteBtn = (): React.ReactNode => {
         const { plugin } = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity === IdentityType.host) {
                 return (
                     <div
@@ -279,7 +283,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
             }
         } else {
             return null;
-        } 
+        }
     }
 
     public render(): React.ReactNode {

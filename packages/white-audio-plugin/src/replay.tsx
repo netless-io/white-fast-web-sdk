@@ -18,10 +18,6 @@ export type WhiteAudioPluginProps = PluginProps<PluginContext, {
     currentTime: number;
 }>;
 
-export type SelfUserInf = {
-    identity: IdentityType,
-};
-
 export type WhiteAudioPluginStates = {
     mute: boolean;
 };
@@ -46,7 +42,7 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
             mute: false,
         };
     }
-    
+
     private startPlayReaction(): IReactionDisposer {
         return reaction(() => {
             return this.props.plugin.attributes.play;

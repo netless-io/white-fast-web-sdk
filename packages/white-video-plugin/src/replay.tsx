@@ -4,11 +4,6 @@ import { reaction, IReactionDisposer } from "mobx";
 import "./index.less";
 import * as video_plugin from "./image/video_plugin.svg";
 import { PluginContext } from "./Plugins";
-export enum IdentityType {
-    host = "host",
-    guest = "guest",
-    listener = "listener",
-}
 
 export type WhiteVideoPluginProps = PluginProps<PluginContext, {
     play: boolean;
@@ -17,11 +12,6 @@ export type WhiteVideoPluginProps = PluginProps<PluginContext, {
     mute: boolean;
     currentTime: number;
 }>;
-
-
-export type SelfUserInf = {
-    identity: IdentityType,
-};
 
 export type WhiteVideoPluginStates = {
     mute: boolean;
@@ -47,7 +37,7 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
             mute: false,
         };
     }
-    
+
     private startPlayReaction(): IReactionDisposer {
         return reaction(() => {
             return this.props.plugin.attributes.play;

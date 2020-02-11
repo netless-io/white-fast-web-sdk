@@ -30,7 +30,7 @@ export type WhiteVideoPluginStates = {
 };
 
 export type SelfUserInf = {
-    identity: IdentityType,
+    identity?: IdentityType,
 };
 
 export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
@@ -96,9 +96,9 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private setMyIdentityRoom = (): void => {
         const {plugin} = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             this.selfUserInf = {
-                identity: this.props.plugin.context.identity,
+                identity: plugin.context.identity,
             };
         }
     }
@@ -226,9 +226,9 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private detectVideoClickEnable = (): any => {
         const { plugin } = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity !== IdentityType.host) {
-                return "none";   
+                return "none";
             } else {
                 return "auto";
             }
@@ -238,18 +238,22 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
     private renderMuteBox = (): React.ReactNode => {
         const { plugin } = this.props;
-        if (plugin.context.identity !== IdentityType.host) {
-            if (this.state.selfMute) {
-                return (
-                    <div className="media-mute-box">
-                        <div onClick={() => {
-                            this.setState({ selfMute: false });
-                        }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
-                            <img src={mute_icon} />
-                            <span>unmute</span>
+        if (plugin.context && plugin.context.identity) {
+            if (plugin.context.identity !== IdentityType.host) {
+                if (this.state.selfMute) {
+                    return (
+                        <div className="media-mute-box">
+                            <div onClick={() => {
+                                this.setState({ selfMute: false });
+                            }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
+                                <img src={mute_icon} />
+                                <span>unmute</span>
+                            </div>
                         </div>
-                    </div>
-                );
+                    );
+                } else {
+                    return null;
+                }
             } else {
                 return null;
             }
@@ -260,7 +264,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private renderDeleteBtn = (): React.ReactNode => {
         const { plugin } = this.props;
-        if (plugin.context) {
+        if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity === IdentityType.host) {
                 return (
                     <div
@@ -278,7 +282,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             }
         } else {
             return null;
-        } 
+        }
     }
     public render(): React.ReactNode {
         const { size, plugin } = this.props;
