@@ -107,10 +107,6 @@
         
         // SDK 提供的调用方法
         netlessRoom.release() // 释放所有资源
-        netlessRoom.getRoom() // 获取房间对象，具体看 developer.netless.link
-        netlessRoom.setPptPreviewHide() // 隐藏预览
-        netlessRoom.setPptPreviewShow() // 打开侧边预览
-        
     </script>
 </body>
 ```

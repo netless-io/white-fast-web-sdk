@@ -117,12 +117,12 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
         if (roomToken && uuid) {
             let whiteWebSdk;
             if (isMobile) {
-                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Surface});
+                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Touch});
             } else {
                 const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
                 plugins.setPluginContext("video", {identity: identity ? identity : undefined});
                 plugins.setPluginContext("audio", {identity: identity ? identity : undefined});
-                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Surface, handToolKey: " ",
+                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Desktop, handToolKey: " ",
                     plugins: plugins});
             }
             const pptConverter = whiteWebSdk.pptConverter(roomToken);

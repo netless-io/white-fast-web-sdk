@@ -65,7 +65,7 @@ class WhiteboardBottomRight extends React.Component<WhiteboardBottomRightProps, 
     }
 
     private pageNumber = (): React.ReactNode => {
-        const {deviceType, roomState} = this.props;
+        const {deviceType, roomState, room} = this.props;
         const activeIndex = roomState.sceneState.index;
         const scenes = roomState.sceneState.scenes;
         const isMobile = deviceType === DeviceType.Touch;
