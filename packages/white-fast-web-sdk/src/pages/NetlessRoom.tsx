@@ -2,7 +2,7 @@ import * as React from "react";
 import TopLoadingBar from "@netless/react-loading-bar";
 import {PPTProgressPhase, UploadManager} from "@netless/oss-upload-manager";
 import * as OSS from "ali-oss";
-import {Icon, message} from "antd";
+import {Icon, message, Progress} from "antd";
 import Dropzone from "react-dropzone";
 import {
     WhiteWebSdk,
@@ -74,6 +74,8 @@ export type NetlessRoomStates = {
     classMode: ClassModeType;
     ossConfigObj: OSSConfigObjType;
     documentArray: PPTDataType[];
+    isLoadingMaskAppear: boolean;
+    percent: number;
 };
 
 @observer
@@ -100,6 +102,8 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             classMode: this.props.defaultClassMode !== undefined ? this.props.defaultClassMode : ClassModeType.discuss,
             ossConfigObj: this.props.ossConfigObj !== undefined ? this.props.ossConfigObj : ossConfigObj,
             documentArray: this.props.documentArray !== undefined ? this.handleDocs(this.props.documentArray) : [],
+            isLoadingMaskAppear: false,
+            percent: 0,
         };
     }
 
@@ -123,7 +127,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                 plugins.setPluginContext("video", {identity: identity ? identity : undefined});
                 plugins.setPluginContext("audio", {identity: identity ? identity : undefined});
                 whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Desktop, handToolKey: " ",
-                    plugins: plugins});
+                    plugins: plugins, preloadDynamicPPT: true});
             }
             const pptConverter = whiteWebSdk.pptConverter(roomToken);
             this.setState({pptConverter: pptConverter});
@@ -155,6 +159,14 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                         this.setState({roomState: {...room.state, modifyState} as RoomState});
                         if (modifyState.roomMembers) {
                             cursor.setColorAndAppliance(modifyState.roomMembers);
+                        }
+                    },
+                    onPPTLoadProgress: (uuid: string, progress: number) => {
+                        this.setState({percent: Math.round(progress * 100)});
+                        if (progress === 1) {
+                            this.setState({isLoadingMaskAppear: false});
+                        } else {
+                            this.setState({isLoadingMaskAppear: true});
                         }
                     },
                 });
@@ -605,6 +617,19 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
         }
     }
 
+    private renderMask = (): React.ReactNode => {
+        if (this.state.isLoadingMaskAppear) {
+            return <div className="loading-mask">
+                <Progress type="circle" percent={this.state.percent} />
+                <div className="loading-mask-text">
+                    正在预加载 pptx 中的资源...
+                </div>
+            </div>;
+        } else {
+            return null;
+        }
+    }
+
     public render(): React.ReactNode {
         const {phase, connectedFail, room, roomState} = this.state;
         const {loadingSvgUrl} = this.props;
@@ -662,6 +687,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                                 documentArray={this.state.documentArray}
                                 room={room}/>
                         </MenuBox>
+                        {this.renderMask()}
                         <Dropzone
                             accept={"image/*"}
                             disableClick={true}
