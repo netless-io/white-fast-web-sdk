@@ -14,6 +14,7 @@ import {
     RoomWhiteboard,
     createPlugins,
     RoomState,
+    AnimationMode,
 } from "white-react-sdk";
 import "white-web-sdk/style/index.css";
 import PageError from "../components/PageError";
@@ -175,6 +176,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                 centerX: 0,
                 centerY: 0,
             });
+            this.pptAutoFullScreen(room);
             (window as any).room = room;
             if (this.props.roomCallback) {
                 this.props.roomCallback(room);
@@ -189,6 +191,21 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             this.setState({room: room, roomToken: roomToken, roomState: room.state});
         } else {
             message.error("join fail");
+        }
+    }
+
+    private pptAutoFullScreen = (room: Room): void => {
+        const scene = room.state.sceneState.scenes[room.state.sceneState.index];
+        if (scene && scene.ppt) {
+            const width = scene.ppt.width;
+            const height = scene.ppt.height;
+            room.moveCameraToContain({
+                originX: - width / 2,
+                originY: - height / 2,
+                width: width,
+                height: height,
+                animationMode: AnimationMode.Immediately,
+            });
         }
     }
 

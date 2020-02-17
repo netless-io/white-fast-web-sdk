@@ -1,4 +1,4 @@
-import {Room, PptConverter, PptKind, Ppt} from "white-web-sdk";
+import {Room, PptConverter, PptKind, Ppt, AnimationMode} from "white-web-sdk";
 import uuidv4 from "uuid/v4";
 import {MultipartUploadResult} from "ali-oss";
 import {PPTDataType, PPTType} from "../../components/menu/PPTDatas";
@@ -74,6 +74,7 @@ export class UploadManager {
         };
         this.room.putScenes(`/${uuid}/${documentFile.id}`, res.scenes);
         this.room.setScenePath(`/${uuid}/${documentFile.id}/${res.scenes[0].name}`);
+        this.pptAutoFullScreen(this.room);
         documentFileCallback(documentFile);
     } else {
         res = await pptConverter.convert({
@@ -94,10 +95,25 @@ export class UploadManager {
         };
         this.room.putScenes(`/${uuid}/${documentFile.id}`, res.scenes);
         this.room.setScenePath(`/${uuid}/${documentFile.id}/${res.scenes[0].name}`);
+        this.pptAutoFullScreen(this.room);
         documentFileCallback(documentFile);
     }
     if (onProgress) {
         onProgress(PPTProgressPhase.Converting, 1);
+    }
+  }
+  private pptAutoFullScreen = (room: Room): void => {
+    const scene = room.state.sceneState.scenes[room.state.sceneState.index];
+    if (scene && scene.ppt) {
+        const width = scene.ppt.width;
+        const height = scene.ppt.height;
+        room.moveCameraToContain({
+            originX: - width / 2,
+            originY: - height / 2,
+            width: width,
+            height: height,
+            animationMode: AnimationMode.Immediately,
+        });
     }
   }
   private getImageSize(imageInnerSize: imageSize): imageSize {

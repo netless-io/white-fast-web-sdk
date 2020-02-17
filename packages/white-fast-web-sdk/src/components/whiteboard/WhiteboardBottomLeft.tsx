@@ -32,7 +32,11 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
 
     private zoomChange = (scale: number): void => {
         const {room} = this.props;
-        room.zoomChange(scale);
+        room.moveCamera({
+            centerX: 0,
+            centerY: 0,
+            scale: scale,
+        });
     }
 
     private renderFileIcon = (): React.ReactNode => {

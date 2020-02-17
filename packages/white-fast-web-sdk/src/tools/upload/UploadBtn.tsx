@@ -10,7 +10,7 @@ import * as image_transform from "../../assets/image/image_transform.svg";
 import * as web_transform from "../../assets/image/web_transform.svg";
 import {TooltipPlacement} from "antd/lib/tooltip";
 import {PPTDataType} from "../../components/menu/PPTDatas";
-import {LanguageEnum, ToolBarPositionEnum, UploadDocumentEnum, UploadToolBoxType} from "../../pages/NetlessRoomTypes";
+import {ToolBarPositionEnum, UploadDocumentEnum, UploadToolBoxType} from "../../pages/NetlessRoomTypes";
 import { projectStore } from "../../models/ProjectStore";
 export type ToolBoxUploadBoxState = {
     toolBoxColor: string,
