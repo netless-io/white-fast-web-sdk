@@ -6,7 +6,7 @@ import * as chat_white from "../assets/image/chat_white.svg";
 import * as player_stop from "../assets/image/player_stop.svg";
 import * as player_begin from "../assets/image/player_begin.svg";
 import {displayWatch} from "../tools/WatchDisplayer";
-import {UserCursor} from "../components/whiteboard/UserCursor";
+import {UserCursor} from "@netless/cursor-adapter";
 import {MessageType} from "../components/whiteboard/WhiteboardBottomRight";
 import WhiteboardTopLeft from "../components/whiteboard/WhiteboardTopLeft";
 import PageError from "../components/PageError";
@@ -29,7 +29,7 @@ export type PlayerPageProps = {
     roomToken: string;
     userId: string;
     userName?: string;
-    userAvatarUrl?: string;
+    userAvatarUrl?: string | null;
     boardBackgroundColor?: string;
     duration?: number;
     beginTimestamp?: number,
@@ -62,11 +62,9 @@ export type PlayerPageStates = {
 
 class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> implements PlayerFacadeObject {
     private scheduleTime: number = 0;
-    private readonly cursor: any;
 
     public constructor(props: PlayerPageProps) {
         super(props);
-        this.cursor = new UserCursor();
         this.state = {
             currentTime: 0,
             phase: PlayerPhase.Pause,
@@ -110,13 +108,14 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                 this.setState({messages: [...this.state.messages, event.payload]});
             });
         }
-        const {uuid, roomToken, beginTimestamp, duration, mediaUrl} = this.props;
+        const {uuid, roomToken, beginTimestamp, duration, mediaUrl, userAvatarUrl} = this.props;
         if (mediaUrl && this.props.isManagerOpen === undefined) {
             this.setState({isManagerOpen: true});
         }
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         if (uuid && roomToken) {
             const whiteWebSdk = new WhiteWebSdk({plugins: plugins});
+            const cursor = new UserCursor();
             const player = await whiteWebSdk.replayRoom(
                 {
                     beginTimestamp: beginTimestamp,
@@ -124,7 +123,7 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                     room: uuid,
                     mediaURL: mediaUrl,
                     roomToken: roomToken,
-                    cursorAdapter: this.cursor,
+                    cursorAdapter: userAvatarUrl !== null ? cursor : undefined,
                 }, {
                     onPhaseChanged: phase => {
                         this.setState({phase: phase});
@@ -132,14 +131,18 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                     onLoadFirstFrame: () => {
                         this.setState({isFirstScreenReady: true});
                         if (player.state.roomMembers) {
-                            this.cursor.setColorAndAppliance(player.state.roomMembers);
+                            if (userAvatarUrl !== null) {
+                                cursor.setColorAndAppliance(player.state.roomMembers);
+                            }
                         }
                     },
                     onSliceChanged: slice => {
                     },
                     onPlayerStateChanged: modifyState => {
                         if (modifyState.roomMembers) {
-                            this.cursor.setColorAndAppliance(modifyState.roomMembers);
+                            if (userAvatarUrl !== null) {
+                                cursor.setColorAndAppliance(modifyState.roomMembers);
+                            }
                         }
                     },
                     onStoppedWithError: error => {
