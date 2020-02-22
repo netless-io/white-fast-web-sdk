@@ -136,7 +136,7 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                             }
                         }
                     },
-                    onSliceChanged: slice => {
+                    onSliceChanged: (slice: string) => {
                     },
                     onPlayerStateChanged: modifyState => {
                         if (modifyState.roomMembers) {
@@ -145,11 +145,11 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                             }
                         }
                     },
-                    onStoppedWithError: error => {
-                        message.error("Playback error");
+                    onStoppedWithError: (error: Error) => {
+                        message.error(`Playback error: ${error}`);
                         this.setState({replayFail: true});
                     },
-                    onScheduleTimeChanged: scheduleTime => {
+                    onScheduleTimeChanged: (scheduleTime: number) => {
                         this.setState({currentTime: scheduleTime});
                     },
                 });

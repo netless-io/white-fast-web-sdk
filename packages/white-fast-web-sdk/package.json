@@ -1,6 +1,6 @@
 {
   "name": "@netless/white-fast-web-sdk",
-  "version": "1.2.15",
+  "version": "1.2.17",
   "main": "dist/bundle.js",
   "types": "dist/facade/index.d.ts",
   "author": "netless",
@@ -19,7 +19,7 @@
     "profile": "webpack-dev-server --config webpack.config.js --progress --colors --open --mode=production"
   },
   "dependencies": {
-    "@netless/cursor-adapter": "^0.0.1",
+    "@netless/cursor-adapter": "^0.0.3",
     "@netless/cursor-icon": "^0.0.1",
     "@netless/fetch-middleware": "^1.0.4",
     "@netless/identicon": "^0.0.1",
@@ -50,7 +50,7 @@
     "react-dropzone": "4.2.10",
     "react-tiny-virtual-list": "^2.2.0",
     "uuid": "^3.3.2",
-    "white-react-sdk": "^2.5.9"
+    "white-react-sdk": "^2.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
