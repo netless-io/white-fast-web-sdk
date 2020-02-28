@@ -1,4 +1,4 @@
-import {Room, PptConverter, PptKind, Ppt, AnimationMode} from "white-web-sdk";
+import {Room, PptConverter, PptKind, Ppt, AnimationMode, WhiteScene} from "white-web-sdk";
 import uuidv4 from "uuid/v4";
 import {MultipartUploadResult} from "ali-oss";
 import {PPTDataType, PPTType} from "../../components/menu/PPTDatas";
