@@ -8,7 +8,7 @@ import ToolBoxAddColor from "./ToolBoxAddColor";
 import {RoomContextConsumer} from "../../pages/RoomContext";
 import { observer } from "mobx-react";
 import { projectStore } from "../../models/ProjectStore";
-import { Room, RoomState} from "white-react-sdk";
+import { Room, RoomState} from "white-web-sdk";
 export type ToolBoxPaletteBoxProps = {
     displayStroke: boolean;
     room: Room;

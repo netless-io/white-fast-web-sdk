@@ -1,7 +1,7 @@
 import * as React from "react";
 import SeekSlider from "@netless/react-seek-slider";
 import {Badge, Icon, message} from "antd";
-import {WhiteWebSdk, PlayerPhase, Player, PlayerWhiteboard, createPlugins} from "white-react-sdk";
+import {WhiteWebSdk, PlayerPhase, Player, createPlugins} from "white-web-sdk";
 import * as chat_white from "../assets/image/chat_white.svg";
 import * as player_stop from "../assets/image/player_stop.svg";
 import * as player_begin from "../assets/image/player_begin.svg";
@@ -321,6 +321,13 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
         this.onWindowResize();
     }
 
+    private handleBindRoom = (ref: HTMLDivElement): void => {
+        const {player} = this.state;
+        if (player) {
+            player.bindHtmlElement(ref);
+        }
+    }
+
     private renderMedia = (): React.ReactNode => {
         const {mediaUrl, layoutType} = this.props;
         if (mediaUrl) {
@@ -396,10 +403,10 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                             </div>}
                         </div>
                         {player &&
-                        <PlayerWhiteboard
-                            style={{backgroundColor: boardBackgroundColor ? boardBackgroundColor : "#F2F2F2"}}
+                        <div
+                            style={{backgroundColor: "#F2F2F2"}}
                             className="player-box"
-                            player={player}/>}
+                            ref={this.handleBindRoom}/>}
                     </div>
                 </div>
                 {this.state.layoutType === LayoutType.Side &&

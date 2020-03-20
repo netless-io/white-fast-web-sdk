@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ViewMode, Room, RoomState, Scene, DeviceType} from "white-web-sdk";
+import {ViewMode, Room, RoomState, DeviceType} from "white-web-sdk";
 import {Badge, Button, message, Modal, Input, Radio} from "antd";
 import Clipboard from "react-clipboard.js";
 import QRCode from "qrcode.react";

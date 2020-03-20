@@ -11,11 +11,11 @@ import {
     PptConverter,
     ViewMode,
     DeviceType,
-    RoomWhiteboard,
     createPlugins,
     RoomState,
     AnimationMode,
-} from "white-react-sdk";
+    RenderEngine,
+} from "white-web-sdk";
 import "white-web-sdk/style/index.css";
 import PageError from "../components/PageError";
 import WhiteboardTopRight from "../components/whiteboard/WhiteboardTopRight";
@@ -122,12 +122,15 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
         if (roomToken && uuid) {
             let whiteWebSdk;
             if (isMobile) {
-                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Touch});
+                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Touch, renderEngine: RenderEngine.Canvas});
             } else {
                 const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
                 plugins.setPluginContext("video", {identity: identity ? identity : undefined});
                 plugins.setPluginContext("audio", {identity: identity ? identity : undefined});
-                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Desktop, handToolKey: " ",
+                whiteWebSdk = new WhiteWebSdk({
+                    deviceType: DeviceType.Desktop,
+                    handToolKey: " ",
+                    renderEngine: RenderEngine.Canvas,
                     plugins: plugins, preloadDynamicPPT: true});
             }
             const pptConverter = whiteWebSdk.pptConverter(roomToken);
@@ -176,6 +179,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                 centerX: 0,
                 centerY: 0,
             });
+            room.setMemberState({pencilOptions: {disableBezier: false, sparseHump: 1.0, sparseWidth: 1.0}});
             this.pptAutoFullScreen(room);
             (window as any).room = room;
             if (this.props.roomCallback) {
@@ -633,6 +637,12 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             }
         }
     }
+    private handleBindRoom = (ref: HTMLDivElement): void => {
+        const {room} = this.state;
+        if (room) {
+            room.bindHtmlElement(ref);
+        }
+    }
 
     private renderMask = (): React.ReactNode => {
         if (this.state.isLoadingMaskAppear) {
@@ -777,7 +787,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                                 style={{pointerEvents: roomStore.boardPointerEvents}}
                                 className="whiteboard-tool-layer-down"
                                 ref={this.setWhiteboardLayerDownRef}>
-                                <RoomWhiteboard room={room} style={{width: "100%", height: "100%"}}/>
+                                 <div ref={this.handleBindRoom} style={{ width: "100%", height: "100%" }} />
                             </div>
                         </Dropzone>
                         {!isMobile &&
