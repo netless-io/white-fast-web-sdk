@@ -175,10 +175,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                     },
                 });
             cursor.setColorAndAppliance(room.state.roomMembers);
-            room.moveCamera({
-                centerX: 0,
-                centerY: 0,
-            });
             room.setMemberState({pencilOptions: {disableBezier: false, sparseHump: 1.0, sparseWidth: 1.0}});
             this.pptAutoFullScreen(room);
             (window as any).room = room;
