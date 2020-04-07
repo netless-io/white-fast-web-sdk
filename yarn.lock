@@ -16528,10 +16528,10 @@ white-web-sdk@^2.5.3:
     video.js "^7.4.0"
     xml-js "^1.6.11"
 
-white-web-sdk@^2.7.1:
-  version "2.7.1"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.7.1.tgz#c8f50076d2796375b9f058e606c1af3f6a5dcf4f"
-  integrity sha512-qQic8HJ5a1gomudaFGdBRYorak+yqegyS8GDrvJmvePqnxyNdpJYBEskCicccyjFx96DHUx6hTegf1M90OZXXw==
+white-web-sdk@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.7.2.tgz#570b4106aeeb5f1a467a633311ec8155beacc393"
+  integrity sha512-8BVIHn9VE7DhjK72xPaI13tybPFOV14T8pAZKsjGIbEOg/qpex8EU2RW2Z8QSX3SbGjECOjkX1RFaH6b9lnG6Q==
   dependencies:
     atob "^2.1.0"
     base64-js "^1.3.1"
