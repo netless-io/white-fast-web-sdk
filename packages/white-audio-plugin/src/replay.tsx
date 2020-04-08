@@ -126,9 +126,9 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
 
 
     public render(): React.ReactNode {
-        const { size, plugin } = this.props;
+        const { size, plugin, scale } = this.props;
         return (
-            <div className="plugin-audio-box" style={{ width: size.width, height: size.height }}>
+            <div className="plugin-audio-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
                 <div className="plugin-audio-box-nav">
                     <div>
                         <img style={{ width: 20, marginLeft: 8 }} src={audio_plugin} />

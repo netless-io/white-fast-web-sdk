@@ -285,9 +285,9 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
     public render(): React.ReactNode {
-        const { size, plugin } = this.props;
+        const { size, plugin, scale } = this.props;
         return (
-            <div className="plugin-video-box" style={{ width: size.width, height: size.height }}>
+            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
                 <div className="plugin-video-box-nav">
                     <div>
                         <img style={{ width: 20, marginLeft: 8 }} src={video_plugin} />
