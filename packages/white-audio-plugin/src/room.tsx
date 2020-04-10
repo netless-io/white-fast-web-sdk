@@ -40,7 +40,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     private readonly reactionSeekDisposer: IReactionDisposer;
     private readonly reactionVolumeDisposer: IReactionDisposer;
     private readonly reactionMuteDisposer: IReactionDisposer;
-    private readonly player: React.RefObject<HTMLAudioElement>;
+    private readonly player: React.RefObject<HTMLVideoElement>;
     private selfUserInf: SelfUserInf | null = null;
     public constructor(props: WhiteAudioPluginProps) {
         super(props);
@@ -61,15 +61,15 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     public componentDidMount(): void {
         const { plugin } = this.props;
-        this.handleSeekData(plugin.attributes.currentTime);
-        this.handlePlayState(false);
+        this.handleRemoteSeekData(plugin.attributes.currentTime);
+        this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
             this.player.current.currentTime = plugin.attributes.currentTime;
             this.player.current.addEventListener("play", (event: any) => {
-                this.handlePlayState(true);
+                this.handleRemotePlayState(true);
             });
             this.player.current.addEventListener("pause", (event: any) => {
-                this.handlePlayState(false);
+                this.handleRemotePlayState(false);
                 if (this.player.current) {
                     this.player.current.currentTime = plugin.attributes.currentTime;
                 }
@@ -78,16 +78,15 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                 if (this.player.current) {
                     const currentTime = Math.round(plugin.attributes.currentTime);
                     if (plugin.attributes.seek !== currentTime) {
-                        this.handleSeekData(currentTime);
+                        this.handleRemoteSeekData(currentTime);
                     }
                 }
             });
             this.player.current.addEventListener("volumechange", (event: any) => {
-                this.handleVolumeChange(event.target.volume);
-                this.handleMuteState(event.target.muted);
+                this.handleRemoteVolumeChange(event.target.volume);
+                this.handleRemoteMuteState(event.target.muted);
             });
         }
-
         this.setMyIdentityRoom();
     }
 
@@ -104,7 +103,28 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         }
     }
 
-    private handleSeekData = (seek: number): void => {
+    private handleNativePlayerState = async (play: boolean): Promise<void> => {
+        if (!this.isHost()) {
+            if (play) {
+                if (this.player.current) {
+                    try {
+                        await this.player.current.play();
+                    } catch (err) {
+                        if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
+                            this.setState({ selfMute: true });
+                            await this.player.current.play();
+                        }
+                    }
+                }
+            } else {
+                if (this.player.current) {
+                    this.player.current.pause();
+                }
+            }
+        }
+    }
+
+    private handleRemoteSeekData = (seek: number): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -113,7 +133,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         }
     }
 
-    private handleMuteState = (mute: boolean): void => {
+    private handleRemoteMuteState = (mute: boolean): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -122,7 +142,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         }
     }
 
-    private handleVolumeChange = (volume: number): void => {
+    private handleRemoteVolumeChange = (volume: number): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -131,7 +151,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         }
     }
 
-    private handlePlayState = (play: boolean): void => {
+    private handleRemotePlayState = (play: boolean): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -154,24 +174,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         return reaction(() => {
             return plugin.attributes.play;
         }, async play => {
-            if (!this.isHost()) {
-                if (play) {
-                    if (this.player.current) {
-                        try {
-                            await this.player.current.play();
-                        } catch (err) {
-                            if (`${err.name}` === "NotAllowedError") {
-                                this.setState({ selfMute: true });
-                                await this.player.current.play();
-                            }
-                        }
-                    }
-                } else {
-                    if (this.player.current) {
-                        this.player.current.pause();
-                    }
-                }
-            }
+            this.handleNativePlayerState(play);
         });
     }
 
@@ -302,14 +305,14 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                 <div className="plugin-audio-box-body">
                     {this.renderMuteBox()}
                     <div className="white-plugin-audio-box">
-                        <audio
+                        <video
                             className="white-plugin-aduio"
                             src={(plugin.attributes as any).pluginAudioUrl}
                             ref={this.player}
                             muted={this.state.mute ? this.state.mute : this.state.selfMute}
                             style={{
                                 width: "100%",
-                                height: "100%",
+                                height: 54,
                                 pointerEvents: this.detectAudioClickEnable(),
                                 outline: "none",
                             }}

@@ -60,15 +60,15 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     public componentDidMount(): void {
         const { plugin } = this.props;
-        this.handleSeekData(plugin.attributes.currentTime);
-        this.handlePlayState(false);
+        this.handleRemoteSeekData(plugin.attributes.currentTime);
+        this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
             this.player.current.currentTime = plugin.attributes.currentTime;
             this.player.current.addEventListener("play", (event: any) => {
-                this.handlePlayState(true);
+                this.handleRemotePlayState(true);
             });
             this.player.current.addEventListener("pause", (event: any) => {
-                this.handlePlayState(false);
+                this.handleRemotePlayState(false);
                 if (this.player.current) {
                     this.player.current.currentTime = plugin.attributes.currentTime;
                 }
@@ -77,16 +77,15 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                 if (this.player.current) {
                     const currentTime = Math.round(plugin.attributes.currentTime);
                     if (plugin.attributes.seek !== currentTime) {
-                        this.handleSeekData(currentTime);
+                        this.handleRemoteSeekData(currentTime);
                     }
                 }
             });
             this.player.current.addEventListener("volumechange", (event: any) => {
-                this.handleVolumeChange(event.target.volume);
-                this.handleMuteState(event.target.muted);
+                this.handleRemoteVolumeChange(event.target.volume);
+                this.handleRemoteMuteState(event.target.muted);
             });
         }
-
         this.setMyIdentityRoom();
     }
 
@@ -103,7 +102,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
-    private handleSeekData = (seek: number): void => {
+    private handleRemoteSeekData = (seek: number): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -112,7 +111,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
-    private handleMuteState = (mute: boolean): void => {
+    private handleRemoteMuteState = (mute: boolean): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -121,7 +120,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
-    private handleVolumeChange = (volume: number): void => {
+    private handleRemoteVolumeChange = (volume: number): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -130,7 +129,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
-    private handlePlayState = (play: boolean): void => {
+    private handleRemotePlayState = (play: boolean): void => {
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
@@ -153,25 +152,29 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         return reaction(() => {
             return plugin.attributes.play;
         }, async play => {
-            if (!this.isHost()) {
-                if (play) {
-                    if (this.player.current) {
-                        try {
+            this.handleNativePlayerState(play);
+        });
+    }
+
+    private handleNativePlayerState = async (play: boolean): Promise<void> => {
+        if (!this.isHost()) {
+            if (play) {
+                if (this.player.current) {
+                    try {
+                        await this.player.current.play();
+                    } catch (err) {
+                        if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
+                            this.setState({ selfMute: true });
                             await this.player.current.play();
-                        } catch (err) {
-                            if (`${err.name}` === "NotAllowedError") {
-                                this.setState({ selfMute: true });
-                                await this.player.current.play();
-                            }
                         }
                     }
-                } else {
-                    if (this.player.current) {
-                        this.player.current.pause();
-                    }
+                }
+            } else {
+                if (this.player.current) {
+                    this.player.current.pause();
                 }
             }
-        });
+        }
     }
 
     private startSeekReaction(): IReactionDisposer {
