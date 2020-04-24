@@ -131,7 +131,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                     deviceType: DeviceType.Desktop,
                     handToolKey: " ",
                     renderEngine: RenderEngine.Canvas,
-                    plugins: plugins, preloadDynamicPPT: true});
+                    plugins: plugins});
             }
             const pptConverter = whiteWebSdk.pptConverter(roomToken);
             this.setState({pptConverter: pptConverter});

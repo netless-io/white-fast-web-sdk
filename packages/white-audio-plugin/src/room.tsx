@@ -5,6 +5,7 @@ import "./index.less";
 import * as mute_icon from "./image/mute_icon.svg";
 import * as audio_plugin from "./image/audio_plugin.svg";
 import * as delete_icon from "./image/delete_icon.svg";
+const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 import { PluginContext } from "./Plugins";
 export enum IdentityType {
     host = "host",
@@ -220,7 +221,12 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         this.reactionMuteDisposer();
         this.reactionVolumeDisposer();
     }
-
+    private handleRemove = async (): Promise<void> => {
+        const { plugin } = this.props;
+        this.handleRemotePlayState(false);
+        await timeout(300);
+        plugin.remove();
+    }
     private timeUpdate = (): void => {
         if (this.player.current) {
             const currentTime = Math.round(this.player.current.currentTime);
@@ -274,9 +280,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                     <div
                         style={{ pointerEvents: "auto" }}
                         className="plugin-audio-box-delete"
-                        onClick={() => {
-                            plugin.remove();
-                        }}
+                        onClick={this.handleRemove}
                     >
                         <img src={delete_icon} />
                     </div>
@@ -306,6 +310,8 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                     {this.renderMuteBox()}
                     <div className="white-plugin-audio-box">
                         <video
+                            webkit-playsinline="true"
+                            playsInline
                             className="white-plugin-aduio"
                             src={(plugin.attributes as any).pluginAudioUrl}
                             ref={this.player}

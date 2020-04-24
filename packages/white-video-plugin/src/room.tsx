@@ -6,6 +6,7 @@ import * as mute_icon from "./image/mute_icon.svg";
 import * as video_plugin from "./image/video_plugin.svg";
 import * as delete_icon from "./image/delete_icon.svg";
 import { PluginContext } from "./Plugins";
+const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 export enum IdentityType {
     host = "host",
     guest = "guest",
@@ -265,6 +266,13 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
+    private handleRemove = async (): Promise<void> => {
+        const { plugin } = this.props;
+        this.handleRemotePlayState(false);
+        await timeout(300);
+        plugin.remove();
+    }
+
     private renderDeleteBtn = (): React.ReactNode => {
         const { plugin } = this.props;
         if (plugin.context && plugin.context.identity) {
@@ -273,9 +281,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                     <div
                         style={{ pointerEvents: "auto" }}
                         className="plugin-audio-box-delete"
-                        onClick={() => {
-                            plugin.remove();
-                        }}
+                        onClick={this.handleRemove}
                     >
                         <img src={delete_icon} />
                     </div>
