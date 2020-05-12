@@ -114,7 +114,7 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
         }
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         if (uuid && roomToken) {
-            const whiteWebSdk = new WhiteWebSdk({plugins: plugins});
+            const whiteWebSdk = new WhiteWebSdk({appIdentifier: "283/VGiScM9Wiw2HJg", plugins: plugins});
             const cursor = new UserCursor();
             const player = await whiteWebSdk.replayRoom(
                 {

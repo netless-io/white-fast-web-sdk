@@ -61,7 +61,7 @@ export default class UploadBtn extends React.Component<UploadBtnProps, ToolBoxUp
     private uploadStatic = async (event: any): Promise<void> => {
         const {ossUploadCallback, uuid, documentFileCallback} = this.props;
         const uploadManager = new UploadManager(this.client, this.props.room, ossUploadCallback);
-        const whiteWebSdk = new WhiteWebSdk();
+        const whiteWebSdk = new WhiteWebSdk({appIdentifier: "283/VGiScM9Wiw2HJg"});
         const pptConverter = whiteWebSdk.pptConverter(this.props.roomToken!);
         await uploadManager.convertFile(
             event.file,
@@ -76,7 +76,7 @@ export default class UploadBtn extends React.Component<UploadBtnProps, ToolBoxUp
     private uploadDynamic = async (event: any): Promise<void> => {
         const {ossUploadCallback, uuid, documentFileCallback} = this.props;
         const uploadManager = new UploadManager(this.client, this.props.room, ossUploadCallback);
-        const whiteWebSdk = new WhiteWebSdk();
+        const whiteWebSdk = new WhiteWebSdk({appIdentifier: "283/VGiScM9Wiw2HJg"});
         const pptConverter = whiteWebSdk.pptConverter(this.props.roomToken!);
         await uploadManager.convertFile(
             event.file,

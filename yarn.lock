@@ -5731,6 +5731,11 @@ detect-file@^1.0.0:
   resolved "https://registry.npmjs.org/detect-file/-/detect-file-1.0.0.tgz#f0d66d03672a825cb1b73bdb3fe62310c8e552b7"
   integrity sha1-8NZtA2cqglyxtzvbP+YjEMjlUrc=
 
+detect-hover@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/detect-hover/-/detect-hover-1.0.2.tgz#589fb0b469220897a9eee3fa36a917e1eda37a21"
+  integrity sha1-WJ+wtGkiCJep7uP6NqkX4e2jeiE=
+
 detect-indent@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/detect-indent/-/detect-indent-4.0.0.tgz#f76d064352cdf43a1cb6ce619c4ee3a9475de208"
@@ -5743,6 +5748,16 @@ detect-indent@^5.0.0, detect-indent@~5.0.0:
   resolved "https://registry.npmjs.org/detect-indent/-/detect-indent-5.0.0.tgz#3871cc0a6a002e8c3e5b3cf7f336264675f06b9d"
   integrity sha1-OHHMCmoALow+Wzz38zYmRnXwa50=
 
+detect-it@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/detect-it/-/detect-it-3.0.5.tgz#816396c0fe12b11af08299a7c2b8381e58d15175"
+  integrity sha1-gWOWwP4SsRrwgpmnwrg4HljRUXU=
+  dependencies:
+    detect-hover "^1.0.2"
+    detect-passive-events "^1.0.4"
+    detect-pointer "^1.0.2"
+    detect-touch-events "^2.0.1"
+
 detect-newline@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/detect-newline/-/detect-newline-2.1.0.tgz#f41f1c10be4b00e87b5f13da680759f2c5bfd3e2"
@@ -5753,6 +5768,16 @@ detect-node@^2.0.3, detect-node@^2.0.4:
   resolved "https://registry.npmjs.org/detect-node/-/detect-node-2.0.4.tgz#014ee8f8f669c5c58023da64b8179c083a28c46c"
   integrity sha512-ZIzRpLJrOj7jjP2miAtgqIfmzbxa4ZOr5jJc601zklsfEx9oTzmmj2nVpIPRpNlRTIh8lc1kyViIY7BWSGNmKw==
 
+detect-passive-events@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/detect-passive-events/-/detect-passive-events-1.0.4.tgz#6ed477e6e5bceb79079735dcd357789d37f9a91a"
+  integrity sha1-btR35uW863kHlzXc01d4nTf5qRo=
+
+detect-pointer@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/detect-pointer/-/detect-pointer-1.0.2.tgz#1e0e4e261dab45055c50c74fb5a4ff09ceb18fbd"
+  integrity sha1-Hg5OJh2rRQVcUMdPtaT/Cc6xj70=
+
 detect-port-alt@1.1.6:
   version "1.1.6"
   resolved "https://registry.npmjs.org/detect-port-alt/-/detect-port-alt-1.1.6.tgz#24707deabe932d4a3cf621302027c2b266568275"
@@ -5760,6 +5785,11 @@ detect-port-alt@1.1.6:
   dependencies:
     address "^1.0.1"
     debug "^2.6.0"
+
+detect-touch-events@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/detect-touch-events/-/detect-touch-events-2.0.1.tgz#365833cf0c5c40c4090a08096b8a688db00fa337"
+  integrity sha1-NlgzzwxcQMQJCggJa4pojbAPozc=
 
 dezalgo@^1.0.0, dezalgo@~1.0.3:
   version "1.0.3"
@@ -16030,6 +16060,11 @@ uuid@^3.0.1, uuid@^3.3.2, uuid@^3.3.3:
   resolved "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
+uuid@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.npmjs.org/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
+  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
+
 v8-compile-cache@2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/v8-compile-cache/-/v8-compile-cache-2.0.3.tgz#00f7494d2ae2b688cfe2899df6ed2c54bef91dbe"
@@ -16528,15 +16563,16 @@ white-web-sdk@^2.5.3:
     video.js "^7.4.0"
     xml-js "^1.6.11"
 
-white-web-sdk@^2.7.5:
-  version "2.7.5"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.7.5.tgz#1af5a602b0095ee0237ef7487b0e6a05030c39d2"
-  integrity sha512-D/c37iMYvnE+8FsBhguWiNhLHeDDPJ9sctwU6xg0wVyBHebiQ62L4CeBt8O2pdmpzj72HsQRwNdSapaIMEaFZQ==
+white-web-sdk@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.8.0.tgz#c464ef72c0c1f1ce37dc1f72b341b3bf1d662e25"
+  integrity sha512-X6TLIt74KCPzfWT7bWJWQYteZWOXAdi+x+UYSMbtEIlZc+XgA5LqWpnN2qdO9rLsaFHmLdLE4f/5/FjrvtOCFw==
   dependencies:
     atob "^2.1.0"
     base64-js "^1.3.1"
     bezier-js "^2.4.4"
     color "^3.1.0"
+    detect-it "^3.0.5"
     ieee754 "^1.1.13"
     isarray "^1.0.0"
     mathjs "^6.2.2"
@@ -16548,7 +16584,7 @@ white-web-sdk@^2.7.5:
     spark-md5 "^3.0.0"
     textarea-caret-ts "^4.1.0"
     url-parse "^1.4.0"
-    uuid "^3.3.3"
+    uuid "^7.0.3"
     video.js "^7.4.0"
     xml-js "^1.6.11"
 

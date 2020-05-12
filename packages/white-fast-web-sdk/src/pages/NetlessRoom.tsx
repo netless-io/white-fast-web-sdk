@@ -125,10 +125,10 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             plugins.setPluginContext("video", {identity: identity ? identity : undefined});
             plugins.setPluginContext("audio", {identity: identity ? identity : undefined});
             if (isMobile) {
-                whiteWebSdk = new WhiteWebSdk({ deviceType: DeviceType.Touch, renderEngine: RenderEngine.Canvas, plugins: plugins});
+                whiteWebSdk = new WhiteWebSdk({ appIdentifier: "283/VGiScM9Wiw2HJg", renderEngine: RenderEngine.Canvas, plugins: plugins});
             } else {
                 whiteWebSdk = new WhiteWebSdk({
-                    deviceType: DeviceType.Desktop,
+                    appIdentifier: "283/VGiScM9Wiw2HJg",
                     handToolKey: " ",
                     renderEngine: RenderEngine.Canvas,
                     plugins: plugins});
