@@ -1,6 +1,6 @@
 {
   "name": "@netless/white-fast-web-sdk",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "main": "dist/bundle.js",
   "types": "dist/facade/index.d.ts",
   "author": "netless",
