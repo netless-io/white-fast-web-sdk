@@ -1,7 +1,6 @@
 import * as React from "react";
 import {RouteComponentProps} from "react-router";
 import AgoraRTC from "agora-rtc-sdk";
-import { ZegoClient } from "webrtc-zego";
 import "./WhiteboardPage.less";
 import {netlessWhiteboardApi} from "../apiMiddleware";
 import WhiteFastSDK from "@netless/white-fast-web-sdk";
@@ -12,19 +11,10 @@ export type WhiteboardPageProps = RouteComponentProps<{
     identityType: IdentityType;
 }>;
 
-const zegoRtcConfig = {
-    type: "zego",
-    rtcObj: ZegoClient,
-    appId: 1082937486,
-    authConfig: {
-        token: [0x60, 0x25, 0xbf, 0x4c, 0xe1, 0x10, 0x42, 0xda, 0x3a, 0xa0, 0xf6, 0xab, 0xf8, 0x14, 0x9e, 0xcc, 0x48, 0x8a, 0x34, 0x08, 0x45, 0xac, 0x60, 0x77, 0x25, 0x1c, 0x00, 0x63, 0x4b, 0xc6, 0xd6, 0x9a],
-    },
-};
-
 const agoraRtcConfig = {
     type: "agora",
     rtcObj: AgoraRTC,
-    appId: "8595fd46955f427db44b4e9ba90f015d",
+    appId: "1156a9febb844e529dc8f41c9bb56e28",
 };
 const rtcConfig = agoraRtcConfig;
 
@@ -84,11 +74,7 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
                 uuid: uuid,
                 roomToken: roomToken,
                 userId: userId,
-                // userName: "伍双",
-                // roomName: "伍双的房间",
-                // userAvatarUrl: "https://ohuuyffq2.qnssl.com/netless_icon.png",
                 logoUrl: "https://white-sdk.oss-cn-beijing.aliyuncs.com/video/netless_black2.svg",
-               //  loadingSvgUrl: "",
                 clickLogoCallback: () => {
                     // this.props.history.push("/");
                 },

@@ -16458,11 +16458,6 @@ webpack@^3.6.0:
     webpack-sources "^1.0.1"
     yargs "^8.0.2"
 
-webrtc-zego@^1.2.2:
-  version "1.6.0"
-  resolved "https://registry.npmjs.org/webrtc-zego/-/webrtc-zego-1.6.0.tgz#09c5217fc8d96bf3961b7fba02132e8327e6213f"
-  integrity sha512-tqQUKbUHcvD106MCUDALESIe+6UpN9VSAYa2D7EsGD7FbGI2i54fQcrpPzUtIVUjMc+aHK4A1fevkK3AXujYpg==
-
 websocket-driver@>=0.5.1:
   version "0.7.3"
   resolved "https://registry.npmjs.org/websocket-driver/-/websocket-driver-0.7.3.tgz#a2d4e0d4f4f116f1e6297eba58b05d430100e9f9"

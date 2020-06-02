@@ -51,7 +51,6 @@ class WhiteboardManager extends React.Component<WhiteboardManagerProps, Whiteboa
             isRtcReady: false,
         };
     }
-
     public UNSAFE_componentWillReceiveProps(nextProps: WhiteboardManagerProps): void {
         if (this.props.cameraState !== undefined && this.props.disableCameraTransform !== undefined && nextProps.cameraState !== undefined && nextProps.disableCameraTransform !== undefined) {
            if (this.props.cameraState !== nextProps.cameraState) {
