@@ -4,8 +4,6 @@ import toolPaletteConfig from "./ToolPaletteConfig";
 import  "./ToolBoxPaletteBox.less";
 import isColor from "is-color";
 import {message} from "antd";
-import ToolBoxAddColor from "./ToolBoxAddColor";
-import {RoomContextConsumer} from "../../pages/RoomContext";
 import { observer } from "mobx-react";
 import { projectStore } from "../../models/ProjectStore";
 import { Room, RoomState} from "white-web-sdk";
@@ -71,15 +69,6 @@ class ToolBoxPaletteBox extends React.Component<ToolBoxPaletteBoxProps, ToolBoxP
         }
     }
 
-    private appendNewColor = (color: string): void => {
-        const {room} = this.props;
-        const colorArray = this.state.colorConfig;
-        colorArray.push(color);
-        this.setState({colorConfig: colorArray});
-        const newColor = this.hexToRgb(color);
-        room.setMemberState({strokeColor: newColor});
-    }
-
     private renderColorCellArray = (): React.ReactNode => {
         const {room} = this.props;
         const {colorConfig} = this.state;
@@ -103,9 +92,6 @@ class ToolBoxPaletteBox extends React.Component<ToolBoxPaletteBoxProps, ToolBoxP
                 return null;
             }
         });
-        nodes.push(<RoomContextConsumer key={"add"} children={context => (
-            <ToolBoxAddColor newColor={this.appendNewColor} newColorArray={context.onColorArrayChange}/>
-        )}/>);
         return nodes;
     }
     private renderColorSelector = (): React.ReactNode => {

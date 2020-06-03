@@ -123,15 +123,6 @@ class ExtendToolInner extends React.Component<ExtendToolInnerProps, ExtendToolIn
                     <TabPane tab={projectStore.isEnglish() ? "Plugins" : "插件教具"} key="1">
                         <div className="extend-icon-out-box">
                             <div className="extend-icon-box">
-                                <Tooltip placement="bottom" title={projectStore.isEnglish() ? "Web page" : "H5 课件"}>
-                                    <div onClick={() => {
-                                        roomStore.isInputH5Visible = true;
-                                    }} className="extend-inner-icon">
-                                        <img src={web_plugin}/>
-                                    </div>
-                                </Tooltip>
-                            </div>
-                            <div className="extend-icon-box">
                                 <Tooltip placement="bottom" title={projectStore.isEnglish() ? "Upload video" : "上传视频"}>
                                     <Upload
                                         accept={"video/mp4"}
@@ -160,29 +151,6 @@ class ExtendToolInner extends React.Component<ExtendToolInnerProps, ExtendToolIn
                     <TabPane tab={projectStore.isEnglish() ? "Graph" : "常用图形"} key="2">
                     </TabPane>
                 </Tabs>
-                <Modal
-                    visible={roomStore.isInputH5Visible}
-                    footer={null}
-                    title={projectStore.isEnglish() ? "H5 课件" : "H5 课件"}
-                    onCancel={() => roomStore.isInputH5Visible = false}
-                >
-                    <div className="whiteboard-share-box">
-                        <div className="whiteboard-share-text-box">
-                            <Input onChange={event => this.setState({url: event.target.value})} placeholder={"输入 H5 课件地址"} size="large"/>
-                            <Button
-                                disabled={!this.isURL()}
-                                type="primary"
-                                onClick={() => {
-                                    this.props.room.setGlobalState({h5PptUrl: this.state.url});
-                                    roomStore.isInputH5Visible = false;
-                                }}
-                                style={{marginTop: 16, width: 240}}
-                                size="large">
-                                提交 H5 课件地址
-                            </Button>
-                        </div>
-                    </div>
-                </Modal>
             </div>
         );
     }

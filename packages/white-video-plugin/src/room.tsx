@@ -45,8 +45,8 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     public constructor(props: WhiteVideoPluginProps) {
         super(props);
         this.player = React.createRef();
-        this.reactionPlayDisposer = this.startPlayReaction();
         this.reactionSeekDisposer = this.startSeekReaction();
+        this.reactionPlayDisposer = this.startPlayReaction();
         this.reactionVolumeDisposer = this.startVolumeReaction();
         this.reactionMuteDisposer = this.startMuteTimeReaction();
         this.state = {
@@ -60,6 +60,10 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
 
     public componentDidMount(): void {
+        this.handleStartCondition();
+    }
+
+    private handleStartCondition = (): void => {
         const { plugin } = this.props;
         this.handleRemoteSeekData(plugin.attributes.currentTime);
         this.handleNativePlayerState(plugin.attributes.play);
@@ -158,6 +162,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
 
     private handleNativePlayerState = async (play: boolean): Promise<void> => {
+        const {plugin} = this.props;
         if (!this.isHost()) {
             if (play) {
                 if (this.player.current) {
@@ -249,6 +254,8 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                         <div className="media-mute-box">
                             <div onClick={() => {
                                 this.setState({ selfMute: false });
+                            }} onTouchStart={() => {
+                                this.setState({ selfMute: false });
                             }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
                                 <img src={mute_icon} />
                                 <span>unmute</span>
@@ -295,6 +302,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
     public render(): React.ReactNode {
         const { size, plugin, scale } = this.props;
+        const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
         return (
             <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
                 <div className="plugin-video-box-nav">
@@ -321,6 +329,16 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                                 pointerEvents: this.detectVideoClickEnable(),
                                 outline: "none",
                             }}
+                           onLoadedMetadataCapture={() => {
+                                if (iOS) {
+                                    console.log("");
+                                }
+                           }}
+                           onCanPlay={() => {
+                               if (!iOS) {
+                                   console.log("");
+                               }
+                           }}
                             controls
                             controlsList={"nodownload nofullscreen"}
                             onTimeUpdate={this.timeUpdate}

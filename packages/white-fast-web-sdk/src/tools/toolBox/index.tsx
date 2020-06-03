@@ -3,11 +3,11 @@ import TweenOne from "rc-tween-one";
 import {Popover} from "antd";
 import ToolBoxPaletteBox from "./ToolBoxPaletteBox";
 import {
-    IconProps,
+    IconProps, ToolBoxArrow,
     ToolBoxEllipse,
     ToolBoxEraser,
     ToolBoxPencil, ToolBoxRectangle,
-    ToolBoxSelector,
+    ToolBoxSelector, ToolBoxStraight,
     ToolBoxText,
 } from "./ToolIconComponent";
 import "./ToolBox.less";
@@ -83,6 +83,16 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
         }),
         rectangle: Object.freeze({
             iconView: ToolBoxRectangle,
+            hasColor: true,
+            hasStroke: true,
+        }),
+        straight: Object.freeze({
+            iconView: ToolBoxStraight,
+            hasColor: true,
+            hasStroke: true,
+        }),
+        arrow: Object.freeze({
+            iconView: ToolBoxArrow,
             hasColor: true,
             hasStroke: true,
         }),

@@ -144,12 +144,11 @@ export class RoomManager {
                       isReadOnly: isReadOnly,
                       isHandUp: false,
                       cameraState: ViewMode.Follower,
-                      disableCameraTransform: true,
+                      disableCameraTransform: false,
                       isReminded: false,
                       applyForRtc: false,
                       isOnline: true,
                   };
-                  this.room.disableCameraTransform = true;
                   globalGuestUsers.push(guestUser);
                   this.room.setGlobalState({guestUsers: globalGuestUsers});
                   this.room.disableDeviceInputs = true;

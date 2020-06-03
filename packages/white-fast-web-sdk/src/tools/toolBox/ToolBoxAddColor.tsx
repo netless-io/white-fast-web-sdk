@@ -73,7 +73,6 @@ export default class ToolBoxAddColor extends React.Component<ToolBoxAddColorProp
             <Popover
                 onVisibleChange={this.handleVisibleChange}
                 trigger="click"
-                content={<ChromePicker color={activeColor} onChangeComplete={this.handleChangeComplete}/>}
                 placement="bottom"
             >
                 <div className="palette-color-inner-box">

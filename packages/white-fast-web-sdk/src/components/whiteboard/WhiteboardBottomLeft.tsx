@@ -6,8 +6,8 @@ import ScaleController from "../../tools/scaleController";
 import file from "../../assets/image/file.svg";
 import * as change_icon from "../../assets/image/change_icon.svg";
 import * as delete_ppt_icon from "../../assets/image/delete_ppt_icon.svg";
-import * as click_icon from "../../assets/image/click_icon.svg";
-import * as click_icon_black from "../../assets/image/click_icon_black.svg";
+import * as redo from "../../assets/image/redo.svg";
+import * as undo from "../../assets/image/undo.svg";
 import * as ppt_click_icon from "../../assets/image/ppt_click_icon.svg";
 import {roomStore} from "../../models/RoomStore";
 import {IdentityType} from "../../pages/NetlessRoomTypes";
@@ -120,6 +120,14 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
             <div className="whiteboard-box-bottom-left">
                 <div className="whiteboard-box-mid">
                     {this.renderFileIcon()}
+                    <div className="scale-controller-box">
+                        <div onClick={() => room.undo()} className="scale-controller-btn">
+                            <img src={undo}/>
+                        </div>
+                        <div onClick={() => room.redo()} className="scale-controller-btn">
+                            <img src={redo}/>
+                        </div>
+                    </div>
                     <ScaleController
                         roomState={roomState}
                         deviceType={this.props.deviceType}

@@ -1,12 +1,14 @@
 import * as React from "react";
 import {PluginProps} from "white-web-sdk";
-import { reaction, IReactionDisposer } from "mobx";
+import {reaction, IReactionDisposer} from "mobx";
 import "./index.less";
 import * as mute_icon from "./image/mute_icon.svg";
 import * as audio_plugin from "./image/audio_plugin.svg";
 import * as delete_icon from "./image/delete_icon.svg";
+
 const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
-import { PluginContext } from "./Plugins";
+import {PluginContext} from "./Plugins";
+
 export enum IdentityType {
     host = "host",
     guest = "guest",
@@ -43,6 +45,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
     private selfUserInf: SelfUserInf | null = null;
+
     public constructor(props: WhiteAudioPluginProps) {
         super(props);
         this.player = React.createRef();
@@ -61,7 +64,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     public componentDidMount(): void {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         this.handleRemoteSeekData(plugin.attributes.currentTime);
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
@@ -112,7 +115,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                         await this.player.current.play();
                     } catch (err) {
                         if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
-                            this.setState({ selfMute: true });
+                            this.setState({selfMute: true});
                             await this.player.current.play();
                         }
                     }
@@ -126,52 +129,52 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     private handleRemoteSeekData = (seek: number): void => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ seek: seek });
+                plugin.putAttributes({seek: seek});
             }
         }
     }
 
     private handleRemoteMuteState = (mute: boolean): void => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ mute: mute });
+                plugin.putAttributes({mute: mute});
             }
         }
     }
 
     private handleRemoteVolumeChange = (volume: number): void => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ volume: volume });
+                plugin.putAttributes({volume: volume});
             }
         }
     }
 
     private handleRemotePlayState = (play: boolean): void => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ play: play });
+                plugin.putAttributes({play: play});
             }
         }
     }
 
     private onTimeUpdate = (currentTime: number): void => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ currentTime: currentTime });
+                plugin.putAttributes({currentTime: currentTime});
             }
         }
     }
 
     private startPlayReaction(): IReactionDisposer {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         return reaction(() => {
             return plugin.attributes.play;
         }, async play => {
@@ -180,7 +183,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     private startSeekReaction(): IReactionDisposer {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         return reaction(() => {
             return plugin.attributes.seek;
         }, seek => {
@@ -204,13 +207,14 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
             }
         });
     }
+
     private startMuteTimeReaction(): IReactionDisposer {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         return reaction(() => {
             return plugin.attributes.mute;
         }, mute => {
             if (!this.isHost()) {
-                this.setState({ mute: mute });
+                this.setState({mute: mute});
             }
         });
     }
@@ -221,8 +225,9 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         this.reactionMuteDisposer();
         this.reactionVolumeDisposer();
     }
+
     private handleRemove = async (): Promise<void> => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         this.handleRemotePlayState(false);
         await timeout(300);
         plugin.remove();
@@ -235,7 +240,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     private detectAudioClickEnable = (): any => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity !== IdentityType.host) {
                 return "none";
@@ -247,16 +252,18 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         }
     }
     private renderMuteBox = (): React.ReactNode => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity !== IdentityType.host) {
                 if (this.state.selfMute) {
                     return (
                         <div className="media-mute-box">
                             <div onClick={() => {
-                                this.setState({ selfMute: false });
-                            }} style={{ pointerEvents: "auto" }} className="media-mute-box-inner">
-                                <img src={mute_icon} />
+                                this.setState({selfMute: false});
+                            }} onTouchStart={() => {
+                                this.setState({selfMute: false});
+                            }} style={{pointerEvents: "auto"}} className="media-mute-box-inner">
+                                <img src={mute_icon}/>
                                 <span>unmute</span>
                             </div>
                         </div>
@@ -273,16 +280,16 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     private renderDeleteBtn = (): React.ReactNode => {
-        const { plugin } = this.props;
+        const {plugin} = this.props;
         if (plugin.context && plugin.context.identity) {
             if (plugin.context.identity === IdentityType.host) {
                 return (
                     <div
-                        style={{ pointerEvents: "auto" }}
+                        style={{pointerEvents: "auto"}}
                         className="plugin-audio-box-delete"
                         onClick={this.handleRemove}
                     >
-                        <img src={delete_icon} />
+                        <img src={delete_icon}/>
                     </div>
                 );
             } else {
@@ -294,12 +301,13 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     public render(): React.ReactNode {
-        const { size, plugin, scale } = this.props;
+        const {size, plugin, scale} = this.props;
         return (
-            <div className="plugin-audio-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+            <div className="plugin-audio-box"
+                 style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
                 <div className="plugin-audio-box-nav">
                     <div>
-                        <img style={{ width: 20, marginLeft: 8 }} src={audio_plugin} />
+                        <img style={{width: 20, marginLeft: 8}} src={audio_plugin}/>
                         <span>
                             Audio Player
                         </span>
