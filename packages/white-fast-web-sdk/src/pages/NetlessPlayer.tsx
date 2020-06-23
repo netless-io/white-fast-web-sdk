@@ -149,7 +149,7 @@ class NetlessPlayer extends React.Component<PlayerPageProps, PlayerPageStates> i
                         message.error(`Playback error: ${error}`);
                         this.setState({replayFail: true});
                     },
-                    onScheduleTimeChanged: (scheduleTime: number) => {
+                    onProgressTimeChanged: (scheduleTime: number) => {
                         this.setState({currentTime: scheduleTime});
                     },
                 });

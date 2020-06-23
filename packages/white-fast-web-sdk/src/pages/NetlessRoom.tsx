@@ -14,7 +14,7 @@ import {
     createPlugins,
     RoomState,
     AnimationMode,
-    RenderEngine,
+    RenderEngine, ApplianceNames,
 } from "white-web-sdk";
 import "white-web-sdk/style/index.css";
 import PageError from "../components/PageError";
@@ -175,9 +175,9 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                     },
                 });
             cursor.setColorAndAppliance(room.state.roomMembers);
-            room.disableSerialization = false;
             room.setMemberState({pencilOptions: {disableBezier: false, sparseHump: 2.0, sparseWidth: 3.0, enableDrawPoint: false}});
             this.pptAutoFullScreen(room);
+            room.disableSerialization = false;
             (window as any).room = room;
             if (this.props.roomCallback) {
                 this.props.roomCallback(room);
@@ -293,6 +293,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
 
     private onWindowResize = (): void => {
         if (this.state.room) {
+            this.pptAutoFullScreen(this.state.room);
             this.state.room.refreshViewSize();
         }
     }
@@ -442,7 +443,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             ]);
         } catch (error) {
             this.state.room!.setMemberState({
-                currentApplianceName: "selector",
+                currentApplianceName: ApplianceNames.selector,
             });
         }
     }

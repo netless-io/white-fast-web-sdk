@@ -16,7 +16,7 @@ import {isMobile} from "react-device-detect";
 import {ToolBarPositionEnum} from "../../pages/NetlessRoomTypes";
 import {DisplayProperty} from "csstype";
 import {roomStore} from "../../models/RoomStore";
-import {Room, RoomState} from "white-web-sdk";
+import {ApplianceNames, Room, RoomState} from "white-web-sdk";
 
 type ApplianceDescription = {
     readonly iconView: React.ComponentClass<IconProps>;
@@ -30,12 +30,6 @@ export enum CustomerComponentPositionType {
     head = "head",
 }
 export type Color = number[];
-export type MemberState = {
-    currentApplianceName: string;
-    strokeColor: Color;
-    strokeWidth: number;
-    textSize: number;
-};
 export type ToolBoxProps = {
     room: Room;
     roomState: RoomState;
@@ -96,6 +90,16 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
             hasColor: true,
             hasStroke: true,
         }),
+        laserPointer: Object.freeze({
+            iconView: ToolBoxArrow,
+            hasColor: true,
+            hasStroke: true,
+        }),
+        hand: Object.freeze({
+            iconView: ToolBoxArrow,
+            hasColor: true,
+            hasStroke: true,
+        }),
     });
 
     public constructor(props: ToolBoxProps) {
@@ -109,7 +113,7 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
         };
     }
 
-    public clickAppliance = (event: Event | undefined, applianceName: string): void => {
+    public clickAppliance = (event: Event | undefined, applianceName: ApplianceNames): void => {
         const {room, roomState} = this.props;
         event!.preventDefault();
         const isSelected = roomState.memberState.currentApplianceName === applianceName;
@@ -177,7 +181,7 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
         const nodes: React.ReactNode[] = [];
         for (const applianceName in ToolBox.descriptions) {
             const description = ToolBox.descriptions[applianceName];
-            const node = this.renderApplianceButton(applianceName, description);
+            const node = this.renderApplianceButton(applianceName as ApplianceNames, description);
             if (isMobile) {
                 if (applianceName !== "ellipse" && applianceName !== "text") {
                     nodes.push(node);
@@ -237,7 +241,7 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
         }
     }
 
-    private renderApplianceButton(applianceName: string, description: ApplianceDescription): React.ReactNode {
+    private renderApplianceButton(applianceName: ApplianceNames, description: ApplianceDescription): React.ReactNode {
         const {toolBarPosition, roomState} = this.props;
         const ToolIcon = description.iconView;
         const isExtendable = description.hasStroke || description.hasColor;

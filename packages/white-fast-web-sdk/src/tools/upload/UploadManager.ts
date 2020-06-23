@@ -1,4 +1,4 @@
-import {Room, PptConverter, PptKind, Ppt, AnimationMode, WhiteScene} from "white-web-sdk";
+import {Room, PptConverter, PptKind, Ppt, AnimationMode, WhiteScene, ApplianceNames} from "white-web-sdk";
 import uuidv4 from "uuid/v4";
 import {MultipartUploadResult} from "ali-oss";
 import {PPTDataType, PPTType} from "../../components/menu/PPTDatas";
@@ -211,7 +211,7 @@ export class UploadManager {
             }
             await Promise.all(tasks.map(task => this.handleUploadTask(task, onProgress)));
             this.room.setMemberState({
-                currentApplianceName: "selector",
+                currentApplianceName: ApplianceNames.selector,
             });
         }
     }
