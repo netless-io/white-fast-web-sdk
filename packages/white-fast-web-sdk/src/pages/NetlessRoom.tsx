@@ -443,7 +443,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             ]);
         } catch (error) {
             this.state.room!.setMemberState({
-                currentApplianceName: ApplianceNames.selector,
+                currentApplianceName: ApplianceNames.pencil,
             });
         }
     }

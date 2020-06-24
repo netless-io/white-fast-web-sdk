@@ -5,7 +5,7 @@ import ToolBoxPaletteBox from "./ToolBoxPaletteBox";
 import {
     IconProps, ToolBoxArrow,
     ToolBoxEllipse,
-    ToolBoxEraser,
+    ToolBoxEraser, ToolBoxHand, ToolBoxLaserPointer,
     ToolBoxPencil, ToolBoxRectangle,
     ToolBoxSelector, ToolBoxStraight,
     ToolBoxText,
@@ -91,14 +91,14 @@ export default class ToolBox extends React.Component<ToolBoxProps, ToolBoxStates
             hasStroke: true,
         }),
         laserPointer: Object.freeze({
-            iconView: ToolBoxArrow,
-            hasColor: true,
-            hasStroke: true,
+            iconView: ToolBoxLaserPointer,
+            hasColor: false,
+            hasStroke: false,
         }),
         hand: Object.freeze({
-            iconView: ToolBoxArrow,
-            hasColor: true,
-            hasStroke: true,
+            iconView: ToolBoxHand,
+            hasColor: false,
+            hasStroke: false,
         }),
     });
 

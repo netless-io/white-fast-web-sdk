@@ -70,6 +70,35 @@ class ExtendToolInner extends React.Component<ExtendToolInnerProps, ExtendToolIn
             console.log(err);
         }
     }
+
+    private uploadVideo2 = async (event: any): Promise<void> => {
+        try {
+            const uploadManager = new UploadManager(this.props.client, this.props.room);
+            const res = await uploadManager.addFile(`${uuidv4()}/${event.file.name}`, event.file,  this.props.onProgress);
+            const isHttps = res.indexOf("https") !== -1;
+            let url;
+            if (isHttps) {
+                url = res;
+            } else {
+                url = res.replace("http", "https");
+            }
+            if (url) {
+                this.props.room.insertPlugin("video", {
+                    originX: 0,
+                    originY: 0,
+                    width: 480,
+                    height: 270,
+                    attributes: {
+                        pluginVideoUrl: url,
+                        isNavigationDisable: true,
+                        poster: "https://white-sdk.oss-cn-beijing.aliyuncs.com/icons/video_cover.svg",
+                    },
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
     private uploadAudio = async (event: any): Promise<void> => {
         try {
             const uploadManager = new UploadManager(this.props.client, this.props.room);
@@ -130,6 +159,19 @@ class ExtendToolInner extends React.Component<ExtendToolInnerProps, ExtendToolIn
                                         customRequest={this.uploadVideo}>
                                         <div className="extend-inner-icon">
                                             <img style={{width: 26}} src={video_plugin}/>
+                                        </div>
+                                    </Upload>
+                                </Tooltip>
+                            </div>
+                            <div className="extend-icon-box">
+                                <Tooltip placement="bottom" title={projectStore.isEnglish() ? "Upload video 2" : "上传视频2"}>
+                                    <Upload
+                                        accept={"video/mp4"}
+                                        showUploadList={false}
+                                        customRequest={this.uploadVideo2}>
+                                        <div className="extend-inner-icon">
+                                            视频<br/>
+                                            测试
                                         </div>
                                     </Upload>
                                 </Tooltip>
