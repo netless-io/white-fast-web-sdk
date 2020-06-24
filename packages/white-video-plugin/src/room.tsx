@@ -300,11 +300,13 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             return null;
         }
     }
-    public render(): React.ReactNode {
-        const { size, plugin, scale } = this.props;
-        const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-        return (
-            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+
+    private renderNavigation = (): React.ReactNode => {
+        const { plugin } = this.props;
+        if ((plugin.attributes as any).isNavigationDisable === true) {
+            return null;
+        } else {
+            return (
                 <div className="plugin-video-box-nav">
                     <div>
                         <img style={{ width: 20, marginLeft: 8 }} src={video_plugin} />
@@ -314,11 +316,22 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                     </div>
                     {this.renderDeleteBtn()}
                 </div>
+            );
+        }
+    }
+
+    public render(): React.ReactNode {
+        const { size, plugin, scale } = this.props;
+        const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+        return (
+            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                {this.renderNavigation()}
                 <div className="plugin-video-box-body">
                     {this.renderMuteBox()}
                     <div className="white-plugin-video-box">
                         <video webkit-playsinline="true"
                             playsInline
+                            poster={(plugin.attributes as any).poster}
                             className="white-plugin-video"
                             src={(plugin.attributes as any).pluginVideoUrl}
                             ref={this.player}
@@ -342,7 +355,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                             controls
                             controlsList={"nodownload nofullscreen"}
                             onTimeUpdate={this.timeUpdate}
-                            preload="auto"
+                            preload="metadata"
                         />
                     </div>
                 </div>

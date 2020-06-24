@@ -299,12 +299,13 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
             return null;
         }
     }
-
-    public render(): React.ReactNode {
-        const {size, plugin, scale} = this.props;
-        return (
-            <div className="plugin-audio-box"
-                 style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+    
+    private renderNavigation = (): React.ReactNode => {
+        const { plugin } = this.props;
+        if ((plugin.attributes as any).isNavigationDisable === true) {
+            return null;
+        } else {
+            return (
                 <div className="plugin-audio-box-nav">
                     <div>
                         <img style={{width: 20, marginLeft: 8}} src={audio_plugin}/>
@@ -314,6 +315,15 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                     </div>
                     {this.renderDeleteBtn()}
                 </div>
+            );
+        }
+    }
+    public render(): React.ReactNode {
+        const {size, plugin, scale} = this.props;
+        return (
+            <div className="plugin-audio-box"
+                 style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                {this.renderNavigation()}
                 <div className="plugin-audio-box-body">
                     {this.renderMuteBox()}
                     <div className="white-plugin-audio-box">

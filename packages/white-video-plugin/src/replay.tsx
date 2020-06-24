@@ -119,11 +119,12 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
         });
     }
 
-
-    public render(): React.ReactNode {
-        const { size, plugin, scale} = this.props;
-        return (
-            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+    private renderNavigation = (): React.ReactNode => {
+        const { plugin } = this.props;
+        if ((plugin.attributes as any).isNavigationDisable === true) {
+            return null;
+        } else {
+            return (
                 <div className="plugin-video-box-nav">
                     <div>
                         <img style={{ width: 20, marginLeft: 8 }} src={video_plugin} />
@@ -132,10 +133,19 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
                         </span>
                     </div>
                 </div>
+            );
+        }
+    }
+    public render(): React.ReactNode {
+        const { size, plugin, scale} = this.props;
+        return (
+            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                {this.renderNavigation()}
                 <div className="plugin-video-box-body">
                     <div className="white-plugin-video-box">
                         <video webkit-playsinline="true"
                             playsInline
+                            poster={(plugin.attributes as any).poster ? (plugin.attributes as any).poster : undefined}
                             className="white-plugin-video"
                             src={(plugin.attributes as any).pluginVideoUrl}
                             ref={this.player}

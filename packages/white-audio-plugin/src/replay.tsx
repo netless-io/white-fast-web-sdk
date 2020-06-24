@@ -29,7 +29,7 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
     private readonly reactionVolumeDisposer: IReactionDisposer;
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly reactionReplayPlayingDisposer: IReactionDisposer;
-    private readonly player: React.RefObject<HTMLAudioElement>;
+    private readonly player: React.RefObject<HTMLVideoElement>;
     public constructor(props: WhiteAudioPluginProps) {
         super(props);
         this.player = React.createRef();
@@ -124,11 +124,12 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
         });
     }
 
-
-    public render(): React.ReactNode {
-        const { size, plugin, scale } = this.props;
-        return (
-            <div className="plugin-audio-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+    private renderNavigation = (): React.ReactNode => {
+        const { plugin } = this.props;
+        if ((plugin.attributes as any).isNavigationDisable === true) {
+            return null;
+        } else {
+            return (
                 <div className="plugin-audio-box-nav">
                     <div>
                         <img style={{ width: 20, marginLeft: 8 }} src={audio_plugin} />
@@ -137,9 +138,18 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
                         </span>
                     </div>
                 </div>
+            );
+        }
+    }
+    public render(): React.ReactNode {
+        const { size, plugin, scale } = this.props;
+        return (
+            <div className="plugin-audio-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                {this.renderNavigation()}
                 <div className="plugin-audio-box-body">
                     <div className="white-plugin-audio-box">
-                        <audio webkit-playsinline="true"
+                        <video
+                            webkit-playsinline="true"
                             playsinline
                             className="white-plugin-audio"
                             src={(plugin.attributes as any).pluginAudioUrl}
