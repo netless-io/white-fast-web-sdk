@@ -10,6 +10,7 @@ export type WhiteVideoPluginProps = PluginProps<PluginContext, WhiteVideoPluginA
 export type WhiteVideoPluginAttributes = {
     play: boolean;
     seek: number;
+    seekTime: number;
     volume: number,
     mute: boolean,
     currentTime: number;
@@ -36,10 +37,11 @@ class WhiteVideoPlugin extends React.Component<WhiteVideoPluginProps, {}> {
                     }}
                 </RoomConsumer>
                 <PlayerConsumer>
-                    {(play: Player | undefined) => {
-                        if (play) {
+                    {(player: Player | undefined) => {
+                        if (player) {
                             return <WhiteVideoPluginReplay
                                 {...this.props}
+                                player={player}
                             />;
                         } else {
                             return null;
@@ -57,6 +59,7 @@ export const videoPlugin: Plugin<PluginContext, WhiteVideoPluginAttributes> = Ob
     defaultAttributes: {
         play: false,
         seek: 0,
+        seekTime: 0,
         mute: false,
         volume: 1,
         currentTime: 0,

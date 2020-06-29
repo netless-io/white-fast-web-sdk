@@ -6,6 +6,7 @@ import * as mute_icon from "./image/mute_icon.svg";
 import * as video_plugin from "./image/video_plugin.svg";
 import * as delete_icon from "./image/delete_icon.svg";
 import { PluginContext } from "./Plugins";
+import {WhiteVideoPluginAttributes} from "./index";
 const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 export enum IdentityType {
     host = "host",
@@ -13,13 +14,7 @@ export enum IdentityType {
     listener = "listener",
 }
 
-export type WhiteVideoPluginProps = PluginProps<PluginContext, {
-    play: boolean;
-    seek: number;
-    volume: number,
-    mute: boolean,
-    currentTime: number;
-}>;
+export type WhiteVideoPluginProps = PluginProps<PluginContext, WhiteVideoPluginAttributes>;
 
 export type WhiteVideoPluginStates = {
     play: boolean;
@@ -32,6 +27,10 @@ export type WhiteVideoPluginStates = {
 
 export type SelfUserInf = {
     identity?: IdentityType,
+};
+type Seek = {
+    seek: number;
+    seekTime: number;
 };
 
 export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
@@ -65,15 +64,17 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private handleStartCondition = (): void => {
         const { plugin } = this.props;
-        this.handleRemoteSeekData(plugin.attributes.currentTime);
+        this.setMyIdentityRoom();
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
             this.player.current.currentTime = plugin.attributes.currentTime;
+            // TODO 代码调用是否会被监听
             this.player.current.addEventListener("play", (event: any) => {
                 this.handleRemotePlayState(true);
             });
             this.player.current.addEventListener("pause", (event: any) => {
                 this.handleRemotePlayState(false);
+                // TODO 暂停的时候 seek 对齐
                 if (this.player.current) {
                     this.player.current.currentTime = plugin.attributes.currentTime;
                 }
@@ -91,7 +92,6 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                 this.handleRemoteMuteState(event.target.muted);
             });
         }
-        this.setMyIdentityRoom();
     }
 
     private isHost = (): boolean => {
@@ -111,7 +111,10 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         const { plugin } = this.props;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ seek: seek });
+                plugin.putAttributes({
+                    seek: seek,
+                    seekTime: Date.now(),
+                });
             }
         }
     }
@@ -136,9 +139,14 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private handleRemotePlayState = (play: boolean): void => {
         const { plugin } = this.props;
+        const currentTime = Math.round(plugin.attributes.currentTime);
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({ play: play });
+                plugin.putAttributes({
+                    play: play,
+                    seek: currentTime,
+                    seekTime: Date.now(),
+                });
             }
         }
     }
@@ -162,7 +170,6 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
 
     private handleNativePlayerState = async (play: boolean): Promise<void> => {
-        const {plugin} = this.props;
         if (!this.isHost()) {
             if (play) {
                 if (this.player.current) {
@@ -185,12 +192,15 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private startSeekReaction(): IReactionDisposer {
         const { plugin } = this.props;
-        return reaction(() => {
-            return plugin.attributes.seek;
-        }, seek => {
+        return reaction<Seek>(() => {
+            return {
+                seek: plugin.attributes.seek,
+                seekTime: plugin.attributes.seekTime,
+            };
+        }, ({seek, seekTime}) => {
             if (!this.isHost()) {
                 if (this.player.current) {
-                    this.player.current.currentTime = seek;
+                    this.player.current.currentTime = seek + Date.now() - seekTime;
                 }
             }
         });

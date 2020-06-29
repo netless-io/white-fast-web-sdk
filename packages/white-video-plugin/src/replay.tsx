@@ -1,20 +1,21 @@
 import * as React from "react";
-import { PluginProps } from "white-web-sdk";
+import {Player, PluginProps} from "white-web-sdk";
 import { reaction, IReactionDisposer } from "mobx";
 import "./index.less";
 import * as video_plugin from "./image/video_plugin.svg";
 import { PluginContext } from "./Plugins";
+import {WhiteVideoPluginAttributes} from "./index";
+import {ProgressSyncNode} from "./ProgressSyncNode";
 
-export type WhiteVideoPluginProps = PluginProps<PluginContext, {
-    play: boolean;
-    seek: number;
-    volume: number;
-    mute: boolean;
-    currentTime: number;
-}>;
+export type WhiteVideoPluginProps = { player: Player } & PluginProps<PluginContext, WhiteVideoPluginAttributes>;
 
 export type WhiteVideoPluginStates = {
     mute: boolean;
+};
+
+type Seek = {
+    seek: number;
+    seekTime: number;
 };
 
 export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
@@ -25,6 +26,7 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly reactionReplayPlayingDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
+    private syncNode: ProgressSyncNode;
     public constructor(props: WhiteVideoPluginProps) {
         super(props);
         this.player = React.createRef();
@@ -36,6 +38,10 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
         this.state = {
             mute: false,
         };
+    }
+
+    public componentDidMount(): void {
+        this.syncNode = new ProgressSyncNode(this.player.current!);
     }
 
     private startPlayReaction(): IReactionDisposer {
@@ -62,11 +68,14 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
 
     private startSeekReaction(): IReactionDisposer {
         return reaction(() => {
-            return this.props.plugin.attributes.seek;
-        }, seek => {
-            if (this.player.current) {
-                this.player.current.currentTime = seek;
-            }
+            return this.props.plugin.playerTimestamp;
+        }, playerTimestamp => {
+
+            const {seek, seekTime} = this.props.plugin.attributes;
+            const currentTimestamp = this.props.player.beginTimestamp + playerTimestamp;
+            const seekToTimestamp = seek + currentTimestamp - seekTime;
+            console.log(currentTimestamp, seekToTimestamp);
+            this.syncNode.syncProgress(seekToTimestamp);
         });
     }
 

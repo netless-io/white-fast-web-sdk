@@ -124,12 +124,12 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
             plugins.setPluginContext("video", {identity: identity ? identity : undefined});
             plugins.setPluginContext("audio", {identity: identity ? identity : undefined});
             if (isMobile) {
-                whiteWebSdk = new WhiteWebSdk({ appIdentifier: "283/VGiScM9Wiw2HJg", renderEngine: RenderEngine.Canvas, plugins: plugins});
+                whiteWebSdk = new WhiteWebSdk({ appIdentifier: "283/VGiScM9Wiw2HJg", renderEngine: RenderEngine.Canvas, plugins: plugins, preloadDynamicPPT: false});
             } else {
                 whiteWebSdk = new WhiteWebSdk({
                     appIdentifier: "283/VGiScM9Wiw2HJg",
-                    handToolKey: " ",
                     renderEngine: RenderEngine.Canvas,
+                    preloadDynamicPPT: false,
                     plugins: plugins});
             }
             const pptConverter = whiteWebSdk.pptConverter(roomToken);
@@ -164,14 +164,14 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                             cursor.setColorAndAppliance(modifyState.roomMembers);
                         }
                     },
-                    onPPTLoadProgress: (uuid: string, progress: number) => {
-                        this.setState({percent: Math.round(progress * 100)});
-                        if (progress === 1) {
-                            this.setState({isLoadingMaskAppear: false});
-                        } else {
-                            this.setState({isLoadingMaskAppear: true});
-                        }
-                    },
+                    // onPPTLoadProgress: (uuid: string, progress: number) => {
+                    //     this.setState({percent: Math.round(progress * 100)});
+                    //     if (progress === 1) {
+                    //         this.setState({isLoadingMaskAppear: false});
+                    //     } else {
+                    //         this.setState({isLoadingMaskAppear: true});
+                    //     }
+                    // },
                 });
             cursor.setColorAndAppliance(room.state.roomMembers);
             room.setMemberState({pencilOptions: {disableBezier: false, sparseHump: 2.0, sparseWidth: 3.0, enableDrawPoint: false}});
@@ -448,9 +448,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
     }
 
     private progress = (phase: PPTProgressPhase, percent: number): void => {
-        message.config({
-            maxCount: 1,
-        });
         switch (phase) {
             case PPTProgressPhase.Uploading: {
                 this.setState({ossPercent: percent * 100});
