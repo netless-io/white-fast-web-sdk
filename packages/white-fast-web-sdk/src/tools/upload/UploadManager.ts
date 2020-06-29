@@ -1,4 +1,4 @@
-import {Room, PptConverter, PptKind, Ppt, AnimationMode, WhiteScene, ApplianceNames} from "white-web-sdk";
+import {AnimationMode, ApplianceNames, createPPTTask, LegacyPPTConverter, PPT, PPTKind, Room} from "white-web-sdk";
 import uuidv4 from "uuid/v4";
 import {MultipartUploadResult} from "ali-oss";
 import {PPTDataType, PPTType} from "../../components/menu/PPTDatas";
@@ -46,10 +46,52 @@ export class UploadManager {
         return fileName.substring(index1, index2);
     }
 
+    private async createPPTTask(pptURL: string): Promise<string> {
+        const url = "https://shunt-api.netless.link/v5/services/conversion/tasks";
+        const response = await fetch(url, {
+            method: "post",
+            headers: {
+                "content-type": "application/json",
+                "Accept": "application/json",
+                "token": "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw",
+            },
+            body: JSON.stringify({
+                resource: pptURL,
+                type: "dynamic",
+                preview: true,
+            }),
+        });
+        if (response.status >= 300) {
+            throw new Error(`failed to convert ${JSON.stringify(pptURL)} with status ${response.status}`);
+        }
+        const {uuid, type, status} = await response.json();
+        return uuid;
+    }
+
+    private async createTaskToken(uuid: string): Promise<string> {
+        const url = `https://shunt-api.netless.link/v5/tokens/tasks/${uuid}`;
+        const response = await fetch(url, {
+            method: "post",
+            headers: {
+                "content-type": "application/json",
+                "Accept": "application/json",
+                "token": "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPTc1MTBkOWEwNzM1ZjA2MDYwMTMzODBkYjVlNTQ2NDA0OTAzOWU2NjE6YWRtaW5JZD0xNTgmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1OTAwNzM1NjEmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NTg1MTY2MDkmbm9uY2U9MTU1ODUxNjYwODYxNzAw",
+            },
+            body: JSON.stringify({
+                lifespan: 0,
+                role: "admin",
+            }),
+        });
+        if (response.status >= 300) {
+            throw new Error(`failed to convert error`);
+        }
+        return await response.json();
+    }
+
     public async convertFile(
         rawFile: File,
-        pptConverter: PptConverter,
-        kind: PptKind,
+        pptConverter: LegacyPPTConverter,
+        kind: PPTKind,
         folder: string,
         uuid: string,
         documentFileCallback: (data: PPTDataType) => void,
@@ -58,8 +100,8 @@ export class UploadManager {
         const fileType = this.getFileType(rawFile.name);
         const path = `/${folder}/${uuid}${fileType}`;
         const pptURL = await this.addFile(path, rawFile, onProgress);
-        let res: Ppt;
-        if (kind === PptKind.Static) {
+        let res: PPT;
+        if (kind === PPTKind.Static) {
             res = await pptConverter.convert({
                 url: pptURL,
                 kind: kind,
@@ -81,24 +123,32 @@ export class UploadManager {
             this.pptAutoFullScreen(this.room);
             documentFileCallback(documentFile);
         } else {
-            res = await pptConverter.convert({
-                url: pptURL,
-                kind: kind,
-                onProgressUpdated: progress => {
-                    if (onProgress) {
-                        onProgress(PPTProgressPhase.Converting, progress);
-                    }
+            const uuid = await this.createPPTTask(pptURL);
+            const taskToken = await this.createTaskToken(uuid);
+            const resp = createPPTTask({
+                uuid: uuid,
+                kind: PPTKind.Dynamic,
+                taskToken: taskToken,
+                callbacks: {
+                    onProgressUpdated: progress => {
+                        if (onProgress) {
+                            onProgress(PPTProgressPhase.Converting, progress.convertedPercentage);
+                        }
+                    },
+                    onTaskFail: () => {},
+                    onTaskSuccess: () => {},
                 },
             });
+            const ppt = await resp.checkUtilGet();
             const documentFile: PPTDataType = {
                 active: true,
                 id: `${uuidv4()}`,
                 pptType: PPTType.dynamic,
-                data: res.scenes,
+                data: ppt.scenes,
                 cover: default_cover,
             };
-            this.room.putScenes(`/${uuid}/${documentFile.id}`, res.scenes);
-            this.room.setScenePath(`/${uuid}/${documentFile.id}/${res.scenes[0].name}`);
+            this.room.putScenes(`/${uuid}/${documentFile.id}`, ppt.scenes);
+            this.room.setScenePath(`/${uuid}/${documentFile.id}/${ppt.scenes[0].name}`);
             this.pptAutoFullScreen(this.room);
             documentFileCallback(documentFile);
         }

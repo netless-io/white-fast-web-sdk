@@ -8,7 +8,7 @@ import {
     WhiteWebSdk,
     Room,
     RoomPhase,
-    PptConverter,
+    LegacyPPTConverter,
     ViewMode,
     DeviceType,
     createPlugins,
@@ -16,7 +16,6 @@ import {
     AnimationMode,
     RenderEngine, ApplianceNames,
 } from "white-web-sdk";
-import "white-web-sdk/style/index.css";
 import PageError from "../components/PageError";
 import WhiteboardTopRight from "../components/whiteboard/WhiteboardTopRight";
 import WhiteboardBottomLeft from "../components/whiteboard/WhiteboardBottomLeft";
@@ -66,7 +65,7 @@ export type NetlessRoomStates = {
     isFileOpen: boolean;
     room?: Room;
     roomState?: RoomState;
-    pptConverter?: PptConverter;
+    pptConverter?: LegacyPPTConverter;
     progressDescription?: string,
     fileUrl?: string;
     whiteboardLayerDownRef?: HTMLDivElement;

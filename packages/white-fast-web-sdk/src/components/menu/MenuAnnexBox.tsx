@@ -174,24 +174,53 @@ export type PageImageProps = { scene: WhiteScene, path: string, room: Room, isMe
 class PageImage extends React.Component<PageImageProps, {}> {
 
     private ref?: HTMLDivElement | null;
+    private imageElement?: HTMLImageElement;
+    private imageURL?: string;
 
     public constructor(props: any) {
         super(props);
     }
     public UNSAFE_componentWillReceiveProps(nextProps: PageImageProps): void {
-        const ref = this.ref;
-        if (nextProps.isMenuOpen !== this.props.isMenuOpen && nextProps.isMenuOpen && ref) {
-            this.props.room.scenePreview(this.props.path, ref, 192, 112.5);
+        if (nextProps.isMenuOpen !== this.props.isMenuOpen &&
+            nextProps.path !== this.props.path &&
+            nextProps.isMenuOpen) {
+            if (this.imageElement && this.imageURL) {
+                URL.revokeObjectURL(this.imageURL);
+                this.imageElement.remove();
+                this.imageURL = undefined;
+                this.imageElement = undefined;
+            }
+            this.fillPreviewImage(nextProps.path).catch(console.error);
         }
     }
-    private setupDivRef = (ref: HTMLDivElement | null) => {
+
+    public componentWillUnmount(): void {
+        if (this.imageURL) {
+            URL.revokeObjectURL(this.imageURL);
+        }
+    }
+
+    private setupDivRef = async (ref: HTMLDivElement | null): Promise<void> => {
         if (ref) {
             this.ref = ref;
-            this.props.room.scenePreview(this.props.path, ref, 192, 112.5);
+            await this.fillPreviewImage(this.props.path);
+        }
+    }
+
+    private async fillPreviewImage(path: string): Promise<void> {
+        if (this.ref) {
+            const {room} = this.props;
+            this.imageURL = await room.generateScreenshot(path, 192, 112.5);
+            this.imageElement = document.createElement("img");
+            this.imageElement.src = this.imageURL;
+            this.imageElement.style.width = `192px`;
+            this.imageElement.style.height = `112.5px`;
+            this.ref.append(this.imageElement);
         }
     }
 
     public render(): React.ReactNode {
+        // return null;
         return <div className="ppt-image" ref={this.setupDivRef.bind(this)}/>;
     }
 }
