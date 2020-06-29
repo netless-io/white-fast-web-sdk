@@ -1,4 +1,4 @@
-const SyncTimeInterval = 1000;
+const SyncTimeInterval = 1;
 
 export class ProgressSyncNode {
 
@@ -8,15 +8,14 @@ export class ProgressSyncNode {
         private readonly player: HTMLVideoElement,
     ) {}
 
-    public syncProgress(progressTimestamp: number): void {
+    public syncProgress(progressTime: number): void {
         if (this.isFirstSync) {
             this.isFirstSync = false;
-            this.player.currentTime = progressTimestamp;
-
+            this.player.currentTime = progressTime;
         } else {
-            const delta = Math.abs(this.player.currentTime * 1000 - progressTimestamp);
+            const delta = Math.abs(this.player.currentTime - progressTime);
             if (delta >= SyncTimeInterval) {
-                this.player.currentTime = Math.round(progressTimestamp / 1000);
+                this.player.currentTime = progressTime;
             }
         }
     }

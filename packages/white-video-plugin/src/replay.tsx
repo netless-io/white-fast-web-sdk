@@ -13,11 +13,6 @@ export type WhiteVideoPluginStates = {
     mute: boolean;
 };
 
-type Seek = {
-    seek: number;
-    seekTime: number;
-};
-
 export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
 
     private readonly reactionPlayDisposer: IReactionDisposer;
@@ -70,12 +65,12 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
         return reaction(() => {
             return this.props.plugin.playerTimestamp;
         }, playerTimestamp => {
-
             const {seek, seekTime} = this.props.plugin.attributes;
-            const currentTimestamp = this.props.player.beginTimestamp + playerTimestamp;
-            const seekToTimestamp = seek + currentTimestamp - seekTime;
-            console.log(currentTimestamp, seekToTimestamp);
-            this.syncNode.syncProgress(seekToTimestamp);
+            if (seekTime !== undefined) {
+                const currentTime = (this.props.player.beginTimestamp + playerTimestamp) / 1000;
+                const seekToTime = seek + currentTime - seekTime;
+                this.syncNode.syncProgress(seekToTime);
+            }
         });
     }
 

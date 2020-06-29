@@ -30,7 +30,7 @@ export type SelfUserInf = {
 };
 type Seek = {
     seek: number;
-    seekTime: number;
+    seekTime?: number;
 };
 
 export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
@@ -68,7 +68,6 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
             this.player.current.currentTime = plugin.attributes.currentTime;
-            // TODO 代码调用是否会被监听
             this.player.current.addEventListener("play", (event: any) => {
                 this.handleRemotePlayState(true);
             });
@@ -113,7 +112,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             if (this.selfUserInf.identity === IdentityType.host) {
                 plugin.putAttributes({
                     seek: seek,
-                    seekTime: Date.now(),
+                    seekTime: Date.now() / 1000,
                 });
             }
         }
@@ -145,7 +144,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                 plugin.putAttributes({
                     play: play,
                     seek: currentTime,
-                    seekTime: Date.now(),
+                    seekTime: Date.now() / 1000,
                 });
             }
         }
@@ -199,8 +198,8 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             };
         }, ({seek, seekTime}) => {
             if (!this.isHost()) {
-                if (this.player.current) {
-                    this.player.current.currentTime = seek + Date.now() - seekTime;
+                if (this.player.current && seekTime !== undefined) {
+                    this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
                 }
             }
         });

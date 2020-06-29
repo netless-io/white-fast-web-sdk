@@ -10,7 +10,7 @@ export type WhiteVideoPluginProps = PluginProps<PluginContext, WhiteVideoPluginA
 export type WhiteVideoPluginAttributes = {
     play: boolean;
     seek: number;
-    seekTime: number;
+    seekTime?: number;
     volume: number,
     mute: boolean,
     currentTime: number;
@@ -59,7 +59,6 @@ export const videoPlugin: Plugin<PluginContext, WhiteVideoPluginAttributes> = Ob
     defaultAttributes: {
         play: false,
         seek: 0,
-        seekTime: 0,
         mute: false,
         volume: 1,
         currentTime: 0,
