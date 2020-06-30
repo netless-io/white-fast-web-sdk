@@ -16558,10 +16558,10 @@ white-web-sdk@^2.5.3:
     video.js "^7.4.0"
     xml-js "^1.6.11"
 
-white-web-sdk@^2.9.6:
-  version "2.9.6"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.9.6.tgz#4656b6e31d99089ca74d2bee90f6bade5fe33c47"
-  integrity sha512-cbghyyTs7R3Fb/nSVbPeo8kTR2rt5AkX24w6TQ+sO7hBteZL++aXq7BE/HEaqDViEiVtvNS5R4oiv+8Qy/5O0w==
+white-web-sdk@^2.9.7:
+  version "2.9.7"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.9.7.tgz#4a892c34494377b361f6a0bf971c290a8347f214"
+  integrity sha512-1SsOE8G4Yooedn67PVcC5XS7M7XGwS8Wij8V1LPuDib+dbx/kHrPd420i99UvE/MWcGFMp5ZEkWRYZAnTkJKUw==
   dependencies:
     atob "^2.1.0"
     base64-js "^1.3.1"
