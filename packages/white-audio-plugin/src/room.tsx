@@ -340,10 +340,8 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                 <div className="plugin-audio-box-body">
                     {this.renderMuteBox()}
                     <div className="white-plugin-audio-box">
-                        <video
-                            webkit-playsinline="true"
-                            playsInline
-                            className="white-plugin-aduio"
+                        <audio
+                            className="white-plugin-audio"
                             src={(plugin.attributes as any).pluginAudioUrl}
                             ref={this.player}
                             muted={this.state.mute ? this.state.mute : this.state.selfMute}
@@ -358,6 +356,24 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                             onTimeUpdate={this.timeUpdate}
                             preload="auto"
                         />
+                        {/*<video*/}
+                        {/*    webkit-playsinline="true"*/}
+                        {/*    playsInline*/}
+                        {/*    className="white-plugin-audio"*/}
+                        {/*    src={(plugin.attributes as any).pluginAudioUrl}*/}
+                        {/*    ref={this.player}*/}
+                        {/*    muted={this.state.mute ? this.state.mute : this.state.selfMute}*/}
+                        {/*    style={{*/}
+                        {/*        width: "100%",*/}
+                        {/*        height: 54,*/}
+                        {/*        pointerEvents: this.detectAudioClickEnable(),*/}
+                        {/*        outline: "none",*/}
+                        {/*    }}*/}
+                        {/*    controls*/}
+                        {/*    controlsList={"nodownload nofullscreen"}*/}
+                        {/*    onTimeUpdate={this.timeUpdate}*/}
+                        {/*    preload="auto"*/}
+                        {/*/>*/}
                     </div>
                 </div>
             </div>
