@@ -77,6 +77,7 @@ class MenuBox extends React.Component<MenuBoxProps, MenuBoxStyleState> {
                 isOpen={this.props.isVisible}
                 onStateChange={async (menuState: any) => {
                     if (!menuState.isOpen) {
+                        await timeout(300);
                         if (setMenuState) {
                             setMenuState(false);
                         }
@@ -87,6 +88,7 @@ class MenuBox extends React.Component<MenuBoxProps, MenuBoxStyleState> {
                             setMenuState(true);
                         }
                         await this.getMenuStyle(true);
+                        await timeout(300);
                         this.setState({isMenuOpen: true});
                     }
                 }}>
