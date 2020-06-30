@@ -8,6 +8,7 @@ import * as delete_icon from "./image/delete_icon.svg";
 
 const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 import {PluginContext} from "./Plugins";
+import {WhiteAudioPluginAttributes} from "./index";
 
 export enum IdentityType {
     host = "host",
@@ -15,13 +16,7 @@ export enum IdentityType {
     listener = "listener",
 }
 
-export type WhiteAudioPluginProps = PluginProps<PluginContext, {
-    play: boolean;
-    seek: number;
-    volume: number,
-    mute: boolean,
-    currentTime: number;
-}>;
+export type WhiteAudioPluginProps = PluginProps<PluginContext, WhiteAudioPluginAttributes>;
 
 
 export type WhiteAudioPluginStates = {
@@ -31,6 +26,11 @@ export type WhiteAudioPluginStates = {
     volume: number;
     seek: number;
     currentTime: number;
+};
+
+type Seek = {
+    seek: number;
+    seekTime?: number;
 };
 
 export type SelfUserInf = {
@@ -64,8 +64,12 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     public componentDidMount(): void {
+        this.handleStartCondition()
+    }
+
+    private handleStartCondition = (): void => {
         const {plugin} = this.props;
-        this.handleRemoteSeekData(plugin.attributes.currentTime);
+        this.setMyIdentityRoom();
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
             this.player.current.currentTime = plugin.attributes.currentTime;
@@ -91,7 +95,6 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
                 this.handleRemoteMuteState(event.target.muted);
             });
         }
-        this.setMyIdentityRoom();
     }
 
     private isHost = (): boolean => {
@@ -157,9 +160,14 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     private handleRemotePlayState = (play: boolean): void => {
         const {plugin} = this.props;
+        const currentTime = Math.round(plugin.attributes.currentTime);
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
-                plugin.putAttributes({play: play});
+                plugin.putAttributes({
+                    play: play,
+                    seek: currentTime,
+                    seekTime: Date.now() / 1000,
+                });
             }
         }
     }
@@ -184,12 +192,17 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
 
     private startSeekReaction(): IReactionDisposer {
         const {plugin} = this.props;
-        return reaction(() => {
-            return plugin.attributes.seek;
-        }, seek => {
+        return reaction<Seek>(() => {
+            return {
+                seek: plugin.attributes.seek,
+                seekTime: plugin.attributes.seekTime,
+            };
+        }, ({seek, seekTime}) => {
             if (!this.isHost()) {
                 if (this.player.current) {
-                    this.player.current.currentTime = seek;
+                    if (this.player.current && seekTime !== undefined) {
+                        this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
+                    }
                 }
             }
         });

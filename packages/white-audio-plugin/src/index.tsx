@@ -11,6 +11,7 @@ export type WhiteAudioPluginAttributes = {
     volume: number,
     mute: boolean,
     currentTime: number;
+    seekTime?: number;
 };
 export type WhiteAudioPluginProps = PluginProps<PluginContext, WhiteAudioPluginAttributes>;
 
@@ -35,10 +36,11 @@ class WhiteAudioPlugin extends React.Component<WhiteAudioPluginProps, {}> {
                     }}
                 </RoomConsumer>
                 <PlayerConsumer>
-                    {(play: Player | undefined) => {
-                        if (play) {
+                    {(player: Player | undefined) => {
+                        if (player) {
                             return <WhiteAudioPluginReplay
                                 {...this.props}
+                                player={player}
                             />;
                         } else {
                             return null;

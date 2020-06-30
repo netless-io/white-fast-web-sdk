@@ -1,22 +1,18 @@
 import * as React from "react";
-import { PluginProps } from "white-web-sdk";
+import {Player, PluginProps} from "white-web-sdk";
 import { reaction, IReactionDisposer } from "mobx";
 import "./index.less";
 import * as audio_plugin from "./image/audio_plugin.svg";
 import { PluginContext } from "./Plugins";
+import {WhiteAudioPluginAttributes} from "./index";
+import {ProgressSyncNode} from "./ProgressSyncNode";
 export enum IdentityType {
     host = "host",
     guest = "guest",
     listener = "listener",
 }
 
-export type WhiteAudioPluginProps = PluginProps<PluginContext, {
-    play: boolean;
-    seek: number;
-    volume: number;
-    mute: boolean;
-    currentTime: number;
-}>;
+export type WhiteAudioPluginProps = { player: Player } & PluginProps<PluginContext, WhiteAudioPluginAttributes>;
 
 export type WhiteAudioPluginStates = {
     mute: boolean;
@@ -30,6 +26,7 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly reactionReplayPlayingDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
+    private syncNode: ProgressSyncNode;
     public constructor(props: WhiteAudioPluginProps) {
         super(props);
         this.player = React.createRef();
@@ -42,7 +39,9 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
             mute: false,
         };
     }
-
+    public componentDidMount(): void {
+        this.syncNode = new ProgressSyncNode(this.player.current!);
+    }
     private startPlayReaction(): IReactionDisposer {
         return reaction(() => {
             return this.props.plugin.attributes.play;
@@ -67,10 +66,13 @@ export default class WhiteAudioPluginReplay extends React.Component<WhiteAudioPl
 
     private startSeekReaction(): IReactionDisposer {
         return reaction(() => {
-            return this.props.plugin.attributes.seek;
-        }, seek => {
-            if (this.player.current) {
-                this.player.current.currentTime = seek;
+            return this.props.plugin.playerTimestamp;
+        }, playerTimestamp => {
+            const {seek, seekTime} = this.props.plugin.attributes;
+            if (seekTime !== undefined) {
+                const currentTime = (this.props.player.beginTimestamp + playerTimestamp) / 1000;
+                const seekToTime = seek + currentTime - seekTime;
+                this.syncNode.syncProgress(seekToTime);
             }
         });
     }
