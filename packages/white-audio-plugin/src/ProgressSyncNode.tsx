@@ -1,4 +1,4 @@
-const SyncTimeInterval = 1;
+const SyncTimeInterval = 2;
 
 export class ProgressSyncNode {
 
