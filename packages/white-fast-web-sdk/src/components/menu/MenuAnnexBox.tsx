@@ -90,6 +90,42 @@ class MenuAnnexBox extends React.Component<MenuAnnexBoxProps, MenuAnnexBoxState>
     private setRef(ref: HTMLDivElement | null): void {
         this.ref = ref;
     }
+
+    private renderPreviewCellS = (scenes: ReadonlyArray<WhiteScene>, activeIndex: number, sceneDir: any): React.ReactNode => {
+        const nodes: React.ReactNode = scenes.map((scene, index) => {
+            const isActive = index === activeIndex;
+            return <div
+                key={index}
+                className={isActive ? "page-out-box-active" : "page-out-box"}
+                onMouseEnter={() => this.setState({hoverCellIndex: index})}
+                onMouseLeave={() => this.setState({hoverCellIndex: null})}
+            >
+                <div className="page-box-inner-index-left">{index + 1}</div>
+                <div
+                    onFocus={() => this.setState({isFocus: true})}
+                    onBlur={() => this.setState({isFocus: false})}
+                    onClick={() => {
+                        this.setScenePath(index);
+                    }} className="page-mid-box">
+                    <div className="page-box">
+                        <PageImage
+                            isMenuOpen={this.props.isPreviewMenuOpen}
+                            scene={scene}
+                            room={this.props.room}
+                            path={sceneDir.concat(scene.name).join("/")}/>
+                    </div>
+                </div>
+                <div className="page-box-inner-index-delete-box">
+                    {this.renderClose(index, isActive)}
+                </div>
+            </div>;
+        });
+        return (
+            <div style={{height: "calc(100vh - 84px)"}}>
+                {nodes}
+            </div>
+        );
+    }
     public render(): React.ReactNode {
         const {roomState} = this.props;
         const scenes = roomState.sceneState.scenes;
@@ -108,42 +144,7 @@ class MenuAnnexBox extends React.Component<MenuAnnexBoxProps, MenuAnnexBoxState>
                     </div>
                 </div>
                 <div style={{height: 42}}/>
-                <VirtualList
-                    height={"calc(100vh - 84px)"}
-                    itemCount={scenes.length}
-                    itemSize={157.5}
-                    overscanCount={6}
-                    renderItem={(itemInfo: ItemInfo) => {
-                        const cell = scenes[itemInfo.index];
-                        const isActive = itemInfo.index === activeIndex;
-                        return <div
-                            key={itemInfo.index}
-                            style={itemInfo.style}
-                            className={isActive ? "page-out-box-active" : "page-out-box"}
-                            onMouseEnter={() => this.setState({hoverCellIndex: itemInfo.index})}
-                            onMouseLeave={() => this.setState({hoverCellIndex: null})}
-                        >
-                            <div className="page-box-inner-index-left">{itemInfo.index + 1}</div>
-                            <div
-                                onFocus={() => this.setState({isFocus: true})}
-                                onBlur={() => this.setState({isFocus: false})}
-                                onClick={() => {
-                                    this.setScenePath(itemInfo.index);
-                                }} className="page-mid-box">
-                                <div className="page-box">
-                                    <PageImage
-                                        isMenuOpen={this.props.isPreviewMenuOpen}
-                                        scene={cell}
-                                        room={this.props.room}
-                                        path={sceneDir.concat(cell.name).join("/")}/>
-                                </div>
-                            </div>
-                            <div className="page-box-inner-index-delete-box">
-                                {this.renderClose(itemInfo.index, isActive)}
-                            </div>
-                        </div>;
-                    }}
-                />
+                {this.renderPreviewCellS(scenes, activeIndex, sceneDir)}
                 <div style={{height: 42}}/>
                 <div className="menu-under-btn">
                     <div
