@@ -28,11 +28,6 @@ export type WhiteAudioPluginStates = {
     currentTime: number;
 };
 
-type Seek = {
-    seek: number;
-    seekTime?: number;
-};
-
 export type SelfUserInf = {
     identity?: IdentityType,
 };
@@ -43,6 +38,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     private readonly reactionSeekDisposer: IReactionDisposer;
     private readonly reactionVolumeDisposer: IReactionDisposer;
     private readonly reactionMuteDisposer: IReactionDisposer;
+    private readonly reactionSeekTimeDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
     private selfUserInf: SelfUserInf | null = null;
 
@@ -53,6 +49,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         this.reactionSeekDisposer = this.startSeekReaction();
         this.reactionVolumeDisposer = this.startVolumeReaction();
         this.reactionMuteDisposer = this.startMuteTimeReaction();
+        this.reactionSeekTimeDisposer = this.startSeekTimeReaction();
         this.state = {
             play: false,
             seek: 0,
@@ -190,21 +187,28 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         });
     }
 
-    private startSeekReaction(): IReactionDisposer {
-        const {plugin} = this.props;
-        return reaction<Seek>(() => {
-            return {
-                seek: plugin.attributes.seek,
-                seekTime: plugin.attributes.seekTime,
-            };
-        }, ({seek, seekTime}) => {
-            if (!this.isHost()) {
-                if (this.player.current) {
-                    if (this.player.current && seekTime !== undefined) {
-                        this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
-                    }
-                }
+    private startSeekTimeReaction(): IReactionDisposer {
+        const { plugin } = this.props;
+        return reaction(() => {
+            return plugin.attributes.seekTime;
+        }, seekTime => {
+            this.handleSeekReaction(plugin.attributes.seek, seekTime);
+        });
+    }
+    private handleSeekReaction = (seek: number, seekTime?: number): void => {
+        if (!this.isHost()) {
+            if (this.player.current && seekTime !== undefined) {
+                this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
             }
+        }
+    }
+
+    private startSeekReaction(): IReactionDisposer {
+        const { plugin } = this.props;
+        return reaction(() => {
+            return plugin.attributes.seek;
+        }, seek => {
+            this.handleSeekReaction(seek, plugin.attributes.seekTime);
         });
     }
 
@@ -333,50 +337,36 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
     public render(): React.ReactNode {
         const {size, plugin, scale} = this.props;
-        return (
-            <div className="plugin-audio-box"
-                 style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
-                {this.renderNavigation()}
-                <div className="plugin-audio-box-body">
-                    {this.renderMuteBox()}
-                    <div className="white-plugin-audio-box">
-                        <audio
-                            className="white-plugin-audio"
-                            src={(plugin.attributes as any).pluginAudioUrl}
-                            ref={this.player}
-                            muted={this.state.mute ? this.state.mute : this.state.selfMute}
-                            style={{
-                                width: "100%",
-                                height: 54,
-                                pointerEvents: this.detectAudioClickEnable(),
-                                outline: "none",
-                            }}
-                            controls
-                            controlsList={"nodownload nofullscreen"}
-                            onTimeUpdate={this.timeUpdate}
-                            preload="auto"
-                        />
-                        {/*<video*/}
-                        {/*    webkit-playsinline="true"*/}
-                        {/*    playsInline*/}
-                        {/*    className="white-plugin-audio"*/}
-                        {/*    src={(plugin.attributes as any).pluginAudioUrl}*/}
-                        {/*    ref={this.player}*/}
-                        {/*    muted={this.state.mute ? this.state.mute : this.state.selfMute}*/}
-                        {/*    style={{*/}
-                        {/*        width: "100%",*/}
-                        {/*        height: 54,*/}
-                        {/*        pointerEvents: this.detectAudioClickEnable(),*/}
-                        {/*        outline: "none",*/}
-                        {/*    }}*/}
-                        {/*    controls*/}
-                        {/*    controlsList={"nodownload nofullscreen"}*/}
-                        {/*    onTimeUpdate={this.timeUpdate}*/}
-                        {/*    preload="auto"*/}
-                        {/*/>*/}
+        if ( scale !== 0) {
+            return (
+                <div className="plugin-audio-box"
+                     style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                    {this.renderNavigation()}
+                    <div className="plugin-audio-box-body">
+                        {this.renderMuteBox()}
+                        <div className="white-plugin-audio-box">
+                            <audio
+                                className="white-plugin-audio"
+                                src={(plugin.attributes as any).pluginAudioUrl}
+                                ref={this.player}
+                                muted={this.state.mute ? this.state.mute : this.state.selfMute}
+                                style={{
+                                    width: "100%",
+                                    height: 54,
+                                    pointerEvents: this.detectAudioClickEnable(),
+                                    outline: "none",
+                                }}
+                                controls
+                                controlsList={"nodownload nofullscreen"}
+                                onTimeUpdate={this.timeUpdate}
+                                preload="auto"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return  null;
+        }
     }
 }

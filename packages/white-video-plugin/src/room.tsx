@@ -28,15 +28,12 @@ export type WhiteVideoPluginStates = {
 export type SelfUserInf = {
     identity?: IdentityType,
 };
-type Seek = {
-    seek: number;
-    seekTime?: number;
-};
 
 export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPluginProps, WhiteVideoPluginStates> {
 
     private readonly reactionPlayDisposer: IReactionDisposer;
     private readonly reactionSeekDisposer: IReactionDisposer;
+    private readonly reactionSeekTimeDisposer: IReactionDisposer;
     private readonly reactionVolumeDisposer: IReactionDisposer;
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
@@ -45,6 +42,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         super(props);
         this.player = React.createRef();
         this.reactionSeekDisposer = this.startSeekReaction();
+        this.reactionSeekTimeDisposer = this.startSeekTimeReaction();
         this.reactionPlayDisposer = this.startPlayReaction();
         this.reactionVolumeDisposer = this.startVolumeReaction();
         this.reactionMuteDisposer = this.startMuteTimeReaction();
@@ -191,18 +189,28 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private startSeekReaction(): IReactionDisposer {
         const { plugin } = this.props;
-        return reaction<Seek>(() => {
-            return {
-                seek: plugin.attributes.seek,
-                seekTime: plugin.attributes.seekTime,
-            };
-        }, ({seek, seekTime}) => {
-            if (!this.isHost()) {
-                if (this.player.current && seekTime !== undefined) {
-                    this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
-                }
-            }
+        return reaction(() => {
+            return plugin.attributes.seek;
+        }, seek => {
+            this.handleSeekReaction(seek, plugin.attributes.seekTime);
         });
+    }
+
+    private startSeekTimeReaction(): IReactionDisposer {
+        const { plugin } = this.props;
+        return reaction(() => {
+            return plugin.attributes.seekTime;
+        }, seekTime => {
+            this.handleSeekReaction(plugin.attributes.seek, seekTime);
+        });
+    }
+
+    private handleSeekReaction = (seek: number, seekTime?: number): void => {
+        if (!this.isHost()) {
+            if (this.player.current && seekTime !== undefined) {
+                this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
+            }
+        }
     }
 
     private startVolumeReaction(): IReactionDisposer {
@@ -233,6 +241,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         this.reactionSeekDisposer();
         this.reactionMuteDisposer();
         this.reactionVolumeDisposer();
+        this.reactionSeekTimeDisposer();
     }
 
     private timeUpdate = (): void => {
@@ -332,43 +341,47 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     public render(): React.ReactNode {
         const { size, plugin, scale } = this.props;
         const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-        return (
-            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
-                {this.renderNavigation()}
-                <div className="plugin-video-box-body">
-                    {this.renderMuteBox()}
-                    <div className="white-plugin-video-box">
-                        <video webkit-playsinline="true"
-                            playsInline
-                            poster={(plugin.attributes as any).poster}
-                            className="white-plugin-video"
-                            src={(plugin.attributes as any).pluginVideoUrl}
-                            ref={this.player}
-                            muted={this.state.mute ? this.state.mute : this.state.selfMute}
-                            style={{
-                                width: "100%",
-                                height: "100%",
-                                pointerEvents: this.detectVideoClickEnable(),
-                                outline: "none",
-                            }}
-                           onLoadedMetadataCapture={() => {
-                                if (iOS) {
-                                    console.log("");
-                                }
-                           }}
-                           onCanPlay={() => {
-                               if (!iOS) {
-                                   console.log("");
-                               }
-                           }}
-                            controls
-                            controlsList={"nodownload nofullscreen"}
-                            onTimeUpdate={this.timeUpdate}
-                            preload="metadata"
-                        />
+        if ( scale !== 0) {
+            return (
+                <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+                    {this.renderNavigation()}
+                    <div className="plugin-video-box-body">
+                        {this.renderMuteBox()}
+                        <div className="white-plugin-video-box">
+                            <video webkit-playsinline="true"
+                                   playsInline
+                                   poster={(plugin.attributes as any).poster}
+                                   className="white-plugin-video"
+                                   src={(plugin.attributes as any).pluginVideoUrl}
+                                   ref={this.player}
+                                   muted={this.state.mute ? this.state.mute : this.state.selfMute}
+                                   style={{
+                                       width: "100%",
+                                       height: "100%",
+                                       pointerEvents: this.detectVideoClickEnable(),
+                                       outline: "none",
+                                   }}
+                                   onLoadedMetadataCapture={() => {
+                                       if (iOS) {
+                                           console.log("");
+                                       }
+                                   }}
+                                   onCanPlay={() => {
+                                       if (!iOS) {
+                                           console.log("");
+                                       }
+                                   }}
+                                   controls
+                                   controlsList={"nodownload nofullscreen"}
+                                   onTimeUpdate={this.timeUpdate}
+                                   preload="metadata"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
+        } else {
+            return null;
+        }
     }
 }
