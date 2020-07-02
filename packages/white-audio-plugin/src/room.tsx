@@ -9,6 +9,7 @@ import * as delete_icon from "./image/delete_icon.svg";
 const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 import {PluginContext} from "./Plugins";
 import {WhiteAudioPluginAttributes} from "./index";
+import {ProgressSyncNode} from "./ProgressSyncNode";
 
 export enum IdentityType {
     host = "host",
@@ -40,6 +41,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly reactionSeekTimeDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
+    private syncNode: ProgressSyncNode;
     private selfUserInf: SelfUserInf | null = null;
 
     public constructor(props: WhiteAudioPluginProps) {
@@ -61,6 +63,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     public componentDidMount(): void {
+        this.syncNode = new ProgressSyncNode(this.player.current!);
         this.handleStartCondition()
     }
 
@@ -69,6 +72,7 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         this.setMyIdentityRoom();
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
+            this.handleFirstSeek();
             this.player.current.currentTime = plugin.attributes.currentTime;
             this.player.current.addEventListener("play", (event: any) => {
                 this.handleRemotePlayState(true);
@@ -108,22 +112,20 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
     }
 
     private handleNativePlayerState = async (play: boolean): Promise<void> => {
-        if (!this.isHost()) {
-            if (play) {
-                if (this.player.current) {
-                    try {
+        if (play) {
+            if (this.player.current) {
+                try {
+                    await this.player.current.play();
+                } catch (err) {
+                    if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
+                        this.setState({selfMute: true});
                         await this.player.current.play();
-                    } catch (err) {
-                        if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
-                            this.setState({selfMute: true});
-                            await this.player.current.play();
-                        }
                     }
                 }
-            } else {
-                if (this.player.current) {
-                    this.player.current.pause();
-                }
+            }
+        } else {
+            if (this.player.current) {
+                this.player.current.pause();
             }
         }
     }
@@ -183,7 +185,9 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
         return reaction(() => {
             return plugin.attributes.play;
         }, async play => {
-            this.handleNativePlayerState(play);
+            if (!this.isHost()) {
+                this.handleNativePlayerState(play);
+            }
         });
     }
 
@@ -335,38 +339,53 @@ export default class WhiteAudioPluginRoom extends React.Component<WhiteAudioPlug
             );
         }
     }
+    private handleFirstSeek = (): void => {
+        const {plugin} = this.props;
+        const currentTime = Date.now() / 1000;
+        let seekToTime;
+        if (plugin.attributes.seekTime) {
+            seekToTime = plugin.attributes.seek + currentTime - plugin.attributes.seekTime
+        } else {
+            seekToTime = plugin.attributes.seek;
+        }
+        this.syncNode.syncProgress(seekToTime);
+    }
     public render(): React.ReactNode {
         const {size, plugin, scale} = this.props;
-        if ( scale !== 0) {
-            return (
-                <div className="plugin-audio-box"
-                     style={{width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
-                    {this.renderNavigation()}
-                    <div className="plugin-audio-box-body">
-                        {this.renderMuteBox()}
-                        <div className="white-plugin-audio-box">
-                            <audio
-                                className="white-plugin-audio"
-                                src={(plugin.attributes as any).pluginAudioUrl}
-                                ref={this.player}
-                                muted={this.state.mute ? this.state.mute : this.state.selfMute}
-                                style={{
-                                    width: "100%",
-                                    height: 54,
-                                    pointerEvents: this.detectAudioClickEnable(),
-                                    outline: "none",
-                                }}
-                                controls
-                                controlsList={"nodownload nofullscreen"}
-                                onTimeUpdate={this.timeUpdate}
-                                preload="auto"
-                            />
-                        </div>
+        const newScale = scale === 0 ? 1 : scale;
+        const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+        return (
+            <div className="plugin-audio-box"
+                 style={{width: (size.width / newScale), height: (size.height / newScale), transform: `scale(${newScale})`}}>
+                {this.renderNavigation()}
+                <div className="plugin-audio-box-body">
+                    {this.renderMuteBox()}
+                    <div className="white-plugin-audio-box">
+                        <audio
+                            className="white-plugin-audio"
+                            src={(plugin.attributes as any).pluginAudioUrl}
+                            ref={this.player}
+                            muted={this.state.mute ? this.state.mute : this.state.selfMute}
+                            style={{
+                                width: "100%",
+                                height: 54,
+                                pointerEvents: this.detectAudioClickEnable(),
+                                outline: "none",
+                            }}
+                            onLoadedMetadataCapture={ async () => {
+                                if (iOS) {
+                                    await timeout(300);
+                                    this.handleFirstSeek();
+                                }
+                            }}
+                            controls
+                            controlsList={"nodownload nofullscreen"}
+                            onTimeUpdate={this.timeUpdate}
+                            preload="auto"
+                        />
                     </div>
                 </div>
-            );
-        } else {
-            return  null;
-        }
+            </div>
+        );
     }
 }

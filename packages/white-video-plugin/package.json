@@ -1,6 +1,6 @@
 {
   "name": "@netless/white-video-plugin",
-  "version": "1.2.7",
+  "version": "1.2.10",
   "description": "",
   "private": false,
   "main": "dist/index.js",

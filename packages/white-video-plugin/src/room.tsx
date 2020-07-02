@@ -1,5 +1,5 @@
 import * as React from "react";
-import {PluginProps} from "white-web-sdk";
+import {PluginProps, Room} from "white-web-sdk";
 import { reaction, IReactionDisposer } from "mobx";
 import "./index.less";
 import * as mute_icon from "./image/mute_icon.svg";
@@ -7,6 +7,7 @@ import * as video_plugin from "./image/video_plugin.svg";
 import * as delete_icon from "./image/delete_icon.svg";
 import { PluginContext } from "./Plugins";
 import {WhiteVideoPluginAttributes} from "./index";
+import {ProgressSyncNode} from "./ProgressSyncNode";
 const timeout = (ms: any) => new Promise(res => setTimeout(res, ms));
 export enum IdentityType {
     host = "host",
@@ -14,7 +15,7 @@ export enum IdentityType {
     listener = "listener",
 }
 
-export type WhiteVideoPluginProps = PluginProps<PluginContext, WhiteVideoPluginAttributes>;
+export type WhiteVideoPluginProps = {room: Room} & PluginProps<PluginContext, WhiteVideoPluginAttributes>;
 
 export type WhiteVideoPluginStates = {
     play: boolean;
@@ -37,6 +38,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     private readonly reactionVolumeDisposer: IReactionDisposer;
     private readonly reactionMuteDisposer: IReactionDisposer;
     private readonly player: React.RefObject<HTMLVideoElement>;
+    private syncNode: ProgressSyncNode;
     private selfUserInf: SelfUserInf | null = null;
     public constructor(props: WhiteVideoPluginProps) {
         super(props);
@@ -57,6 +59,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     }
 
     public componentDidMount(): void {
+        this.syncNode = new ProgressSyncNode(this.player.current!);
         this.handleStartCondition();
     }
 
@@ -65,7 +68,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         this.setMyIdentityRoom();
         this.handleNativePlayerState(plugin.attributes.play);
         if (this.player.current) {
-            this.player.current.currentTime = plugin.attributes.currentTime;
+            this.handleFirstSeek();
             this.player.current.addEventListener("play", (event: any) => {
                 this.handleRemotePlayState(true);
             });
@@ -89,6 +92,18 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                 this.handleRemoteMuteState(event.target.muted);
             });
         }
+    }
+
+    private handleFirstSeek = (): void => {
+        const {plugin} = this.props;
+        const currentTime = Date.now() / 1000;
+        let seekToTime;
+        if (plugin.attributes.seekTime) {
+            seekToTime = plugin.attributes.seek + currentTime - plugin.attributes.seekTime
+        } else {
+            seekToTime = plugin.attributes.seek;
+        }
+        this.syncNode.syncProgress(seekToTime);
     }
 
     private isHost = (): boolean => {
@@ -162,27 +177,27 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         return reaction(() => {
             return plugin.attributes.play;
         }, async play => {
-            this.handleNativePlayerState(play);
+            if (!this.isHost()) {
+                await this.handleNativePlayerState(play);
+            }
         });
     }
 
     private handleNativePlayerState = async (play: boolean): Promise<void> => {
-        if (!this.isHost()) {
-            if (play) {
-                if (this.player.current) {
-                    try {
+        if (play) {
+            if (this.player.current) {
+                try {
+                    await this.player.current.play();
+                } catch (err) {
+                    if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
+                        this.setState({ selfMute: true });
                         await this.player.current.play();
-                    } catch (err) {
-                        if (`${err.name}` === "NotAllowedError" || `${err.name}` === "AbortError") {
-                            this.setState({ selfMute: true });
-                            await this.player.current.play();
-                        }
                     }
                 }
-            } else {
-                if (this.player.current) {
-                    this.player.current.pause();
-                }
+            }
+        } else {
+            if (this.player.current) {
+                this.player.current.pause();
             }
         }
     }
@@ -205,7 +220,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         });
     }
 
-    private handleSeekReaction = (seek: number, seekTime?: number): void => {
+    private handleSeekReaction = async (seek: number, seekTime?: number): Promise<void> => {
         if (!this.isHost()) {
             if (this.player.current && seekTime !== undefined) {
                 this.player.current.currentTime = seek + (Date.now() / 1000) - seekTime;
@@ -341,47 +356,45 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
     public render(): React.ReactNode {
         const { size, plugin, scale } = this.props;
         const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
-        if ( scale !== 0) {
-            return (
-                <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
-                    {this.renderNavigation()}
-                    <div className="plugin-video-box-body">
-                        {this.renderMuteBox()}
-                        <div className="white-plugin-video-box">
-                            <video webkit-playsinline="true"
-                                   playsInline
-                                   poster={(plugin.attributes as any).poster}
-                                   className="white-plugin-video"
-                                   src={(plugin.attributes as any).pluginVideoUrl}
-                                   ref={this.player}
-                                   muted={this.state.mute ? this.state.mute : this.state.selfMute}
-                                   style={{
-                                       width: "100%",
-                                       height: "100%",
-                                       pointerEvents: this.detectVideoClickEnable(),
-                                       outline: "none",
-                                   }}
-                                   onLoadedMetadataCapture={() => {
-                                       if (iOS) {
-                                           console.log("");
-                                       }
-                                   }}
-                                   onCanPlay={() => {
-                                       if (!iOS) {
-                                           console.log("");
-                                       }
-                                   }}
-                                   controls
-                                   controlsList={"nodownload nofullscreen"}
-                                   onTimeUpdate={this.timeUpdate}
-                                   preload="metadata"
-                            />
-                        </div>
+        const newScale = scale === 0 ? 1 : scale;
+        return (
+            <div className="plugin-video-box" style={{ width: (size.width / newScale), height: (size.height / newScale), transform: `scale(${newScale})`}}>
+                {this.renderNavigation()}
+                <div className="plugin-video-box-body">
+                    {this.renderMuteBox()}
+                    <div className="white-plugin-video-box">
+                        <video webkit-playsinline="true"
+                               playsInline
+                               poster={(plugin.attributes as any).poster}
+                               className="white-plugin-video"
+                               src={(plugin.attributes as any).pluginVideoUrl}
+                               ref={this.player}
+                               muted={this.state.mute ? this.state.mute : this.state.selfMute}
+                               style={{
+                                   width: "100%",
+                                   height: "100%",
+                                   pointerEvents: this.detectVideoClickEnable(),
+                                   outline: "none",
+                               }}
+                               onLoadedMetadataCapture={ async () => {
+                                   if (iOS) {
+                                       await timeout(300);
+                                       this.handleFirstSeek();
+                                   }
+                               }}
+                               onCanPlay={() => {
+                                   if (!iOS) {
+                                       // this.handleFirstSeek();
+                                   }
+                               }}
+                               controls
+                               controlsList={"nodownload nofullscreen"}
+                               onTimeUpdate={this.timeUpdate}
+                               preload="metadata"
+                        />
                     </div>
                 </div>
-            );
-        } else {
-            return null;
-        }
+            </div>
+        );
     }
 }

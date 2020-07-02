@@ -21,7 +21,6 @@ class WhiteVideoPlugin extends React.Component<WhiteVideoPluginProps, {}> {
     public constructor(props: WhiteVideoPluginProps) {
         super(props);
     }
-
     public render(): React.ReactNode {
         return (
             <CNode context={this.props.cnode}>
@@ -30,6 +29,7 @@ class WhiteVideoPlugin extends React.Component<WhiteVideoPluginProps, {}> {
                         if (room) {
                             return <WhiteVideoPluginRoom
                                 {...this.props}
+                                room={room}
                             />
                         } else {
                             return null;

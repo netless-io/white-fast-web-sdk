@@ -142,8 +142,9 @@ export default class WhiteVideoPluginReplay extends React.Component<WhiteVideoPl
     }
     public render(): React.ReactNode {
         const { size, plugin, scale} = this.props;
+        const newScale = scale === 0 ? 1 : scale;
         return (
-            <div className="plugin-video-box" style={{ width: (size.width / scale), height: (size.height / scale), transform: `scale(${scale})`}}>
+            <div className="plugin-video-box" style={{ width: (size.width / newScale), height: (size.height / newScale), transform: `scale(${newScale})`}}>
                 {this.renderNavigation()}
                 <div className="plugin-video-box-body">
                     <div className="white-plugin-video-box">
