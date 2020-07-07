@@ -24,6 +24,7 @@ export type WhiteVideoPluginStates = {
     volume: number;
     seek: number;
     currentTime: number;
+    isEnd: boolean;
 };
 
 export type SelfUserInf = {
@@ -55,6 +56,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             currentTime: 0,
             mute: false,
             volume: 1,
+            isEnd: false,
         };
     }
 
@@ -81,12 +83,11 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
             });
             this.player.current.addEventListener("seeked", (event: any) => {
                 if (this.player.current) {
-                    const currentTime = Math.round(plugin.attributes.currentTime);
-                    if (plugin.attributes.seek !== currentTime) {
-                        this.handleRemoteSeekData(currentTime);
-                    }
+                    const currentTime = plugin.attributes.currentTime;
+                    this.handleRemoteSeekData(currentTime);
                 }
             });
+
             this.player.current.addEventListener("volumechange", (event: any) => {
                 this.handleRemoteVolumeChange(event.target.volume);
                 this.handleRemoteMuteState(event.target.muted);
@@ -94,16 +95,18 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
-    private handleFirstSeek = (): void => {
-        const {plugin} = this.props;
-        const currentTime = Date.now() / 1000;
-        let seekToTime;
-        if (plugin.attributes.seekTime) {
-            seekToTime = plugin.attributes.seek + currentTime - plugin.attributes.seekTime
-        } else {
-            seekToTime = plugin.attributes.seek;
+    private handleFirstSeek = (isEnd?: boolean): void => {
+        if (!isEnd) {
+            const {plugin} = this.props;
+            const currentTime = Date.now() / 1000;
+            let seekToTime;
+            if (plugin.attributes.seekTime) {
+                seekToTime = plugin.attributes.seek + currentTime - plugin.attributes.seekTime
+            } else {
+                seekToTime = plugin.attributes.seek;
+            }
+            this.syncNode.syncProgress(seekToTime);
         }
-        this.syncNode.syncProgress(seekToTime);
     }
 
     private isHost = (): boolean => {
@@ -151,7 +154,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
 
     private handleRemotePlayState = (play: boolean): void => {
         const { plugin } = this.props;
-        const currentTime = Math.round(plugin.attributes.currentTime);
+        const currentTime = plugin.attributes.currentTime;
         if (this.selfUserInf) {
             if (this.selfUserInf.identity === IdentityType.host) {
                 plugin.putAttributes({
@@ -257,11 +260,14 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         this.reactionMuteDisposer();
         this.reactionVolumeDisposer();
         this.reactionSeekTimeDisposer();
+        if (this.player.current) {
+            this.player.current.pause();
+        }
     }
 
     private timeUpdate = (): void => {
         if (this.player.current) {
-            const currentTime = Math.round(this.player.current.currentTime);
+            const currentTime = this.player.current.currentTime;
             this.onTimeUpdate(currentTime);
         }
     }
@@ -353,6 +359,7 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
         }
     }
 
+
     public render(): React.ReactNode {
         const { size, plugin, scale } = this.props;
         const iOS = navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
@@ -379,13 +386,30 @@ export default class WhiteVideoPluginRoom extends React.Component<WhiteVideoPlug
                                onLoadedMetadataCapture={ async () => {
                                    if (iOS) {
                                        await timeout(300);
-                                       this.handleFirstSeek();
+                                       this.handleFirstSeek(this.state.isEnd);
                                    }
                                }}
-                               onCanPlay={() => {
-                                   if (!iOS) {
-                                       // this.handleFirstSeek();
+                               onEnded={ async () => {
+                                   if (this.player.current) {
+                                       if (this.selfUserInf) {
+                                           if (this.selfUserInf.identity === IdentityType.host) {
+                                               plugin.putAttributes({
+                                                   seek: 0,
+                                                   seekTime: undefined,
+                                                   currentTime: 0,
+                                               });
+                                               await timeout(500);
+                                               this.player.current.load();
+                                           } else {
+                                               await timeout(1000);
+                                               this.player.current.load();
+                                           }
+                                       } else {
+                                           await timeout(1000);
+                                           this.player.current.load();
+                                       }
                                    }
+                                   this.setState({isEnd: true});
                                }}
                                controls
                                controlsList={"nodownload nofullscreen"}

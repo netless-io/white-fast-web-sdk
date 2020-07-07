@@ -292,7 +292,6 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
 
     private onWindowResize = (): void => {
         if (this.state.room) {
-            this.pptAutoFullScreen(this.state.room);
             this.state.room.refreshViewSize();
         }
     }
