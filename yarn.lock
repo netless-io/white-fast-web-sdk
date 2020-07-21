@@ -16563,10 +16563,10 @@ white-web-sdk@^2.5.3:
     video.js "^7.4.0"
     xml-js "^1.6.11"
 
-white-web-sdk@^2.9.9:
-  version "2.9.9"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.9.9.tgz#4e62369ad52b39e8cb0247275f8212750d746a59"
-  integrity sha512-lsSokNjDOW2ThtMF6865kbnLGdp9UMTmQBAHOgAkVrLP21TRPmBsDLSHsuMvnupqT8j2wzqncr7Bx5ODUeKOYA==
+white-web-sdk@^2.9.12:
+  version "2.9.12"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.9.12.tgz#dc4ae49304c049ad585d9d71bff11e5b85c83f97"
+  integrity sha512-unGYo+wlCoKQXsC0oZ4uYDsch+jN9+1ANwUG32C056q7Nw9Xz5gAMH6Du+sYNpCZyH4e1nw+1aEe753q2Uhu3Q==
   dependencies:
     "@netless/canvas-polyfill" "^0.0.3"
     atob "^2.1.0"
@@ -16582,6 +16582,7 @@ white-web-sdk@^2.9.9:
     query-string "5"
     react "^16.8.0"
     react-dom "^16.8.0"
+    resize-observer-polyfill "^1.5.1"
     spark-md5 "^3.0.0"
     textarea-caret-ts "^4.1.0"
     url-parse "^1.4.0"

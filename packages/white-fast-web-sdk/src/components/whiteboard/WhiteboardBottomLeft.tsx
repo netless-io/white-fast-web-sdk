@@ -8,10 +8,11 @@ import * as change_icon from "../../assets/image/change_icon.svg";
 import * as delete_ppt_icon from "../../assets/image/delete_ppt_icon.svg";
 import * as redo from "../../assets/image/redo.svg";
 import * as undo from "../../assets/image/undo.svg";
+import * as redo_black from "../../assets/image/redo_black.svg";
+import * as undo_black from "../../assets/image/undo_black.svg";
 import * as ppt_click_icon from "../../assets/image/ppt_click_icon.svg";
 import {roomStore} from "../../models/RoomStore";
 import {IdentityType} from "../../pages/NetlessRoomTypes";
-import {Popover} from "antd";
 
 export type WhiteboardBottomLeftProps = {
     room: Room;
@@ -22,12 +23,20 @@ export type WhiteboardBottomLeftProps = {
     isReadOnly?: boolean;
     roomState: RoomState;
 };
+export type WhiteboardBottomLeftStates = {
+    undoSteps: number;
+    redoSteps: number;
+};
 
 @observer
-class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}> {
+class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, WhiteboardBottomLeftStates> {
 
     public constructor(props: WhiteboardBottomLeftProps) {
         super(props);
+        this.state = {
+            undoSteps: 0,
+            redoSteps: 0,
+        };
     }
 
     private zoomChange = (scale: number): void => {
@@ -36,6 +45,20 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
             centerX: 0,
             centerY: 0,
             scale: scale,
+        });
+    }
+
+    public componentDidMount(): void {
+        const {room} = this.props;
+        room.callbacks.on("onCanUndoStepsUpdate", (steps: number): void => {
+            this.setState({
+                undoSteps: steps,
+            });
+        });
+        room.callbacks.on("onCanRedoStepsUpdate", (steps: number): void => {
+            this.setState({
+                redoSteps: steps,
+            });
         });
     }
 
@@ -105,6 +128,7 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
 
     public render(): React.ReactNode {
         const {isReadOnly, room, roomState} = this.props;
+        const {redoSteps, undoSteps} = this.state;
         if (isReadOnly) {
             return <div className="whiteboard-box-bottom-left">
                 <div className="whiteboard-box-mid">
@@ -122,10 +146,10 @@ class WhiteboardBottomLeft extends React.Component<WhiteboardBottomLeftProps, {}
                     {this.renderFileIcon()}
                     <div className="scale-controller-box">
                         <div onClick={() => room.undo()} className="scale-controller-btn">
-                            <img src={undo}/>
+                            <img style={{width: 16}} src={undoSteps === 0 ? undo : undo_black}/>
                         </div>
                         <div onClick={() => room.redo()} className="scale-controller-btn">
-                            <img src={redo}/>
+                            <img style={{width: 16}} src={redoSteps === 0 ? redo : redo_black}/>
                         </div>
                     </div>
                     <ScaleController

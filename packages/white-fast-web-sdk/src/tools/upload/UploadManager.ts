@@ -1,4 +1,13 @@
-import {AnimationMode, ApplianceNames, createPPTTask, LegacyPPTConverter, PPT, PPTKind, Room} from "white-web-sdk";
+import {
+    AnimationMode,
+    ApplianceNames,
+    createPPTTask,
+    LegacyPPTConverter,
+    PPT,
+    PptDescription,
+    PPTKind,
+    Room
+} from "white-web-sdk";
 import uuidv4 from "uuid/v4";
 import {MultipartUploadResult} from "ali-oss";
 import {PPTDataType, PPTType} from "../../components/menu/PPTDatas";
@@ -118,7 +127,21 @@ export class UploadManager {
                 data: res.scenes,
                 cover: default_cover,
             };
-            this.room.putScenes(`/${uuid}/${documentFile.id}`, res.scenes);
+            const newScenes = res.scenes.map(data => {
+                if (data.ppt && data.name) {
+                    return {
+                        name: data.name,
+                        ppt: {
+                            width: 1080,
+                            height: 1080 * (data.ppt.height / data.ppt.width),
+                            ...data.ppt,
+                        },
+                    };
+                } else {
+                    return  data;
+                }
+            });
+            this.room.putScenes(`/${uuid}/${documentFile.id}`, newScenes);
             this.room.setScenePath(`/${uuid}/${documentFile.id}/${res.scenes[0].name}`);
             this.pptAutoFullScreen(this.room);
             documentFileCallback(documentFile);
