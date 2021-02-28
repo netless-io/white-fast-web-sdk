@@ -519,7 +519,8 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
         }
     }
     private renderRecordComponent = (roomState: RoomState): React.ReactNode => {
-        if (this.props.enableRecord === false) {
+        const {enableRecord, isRecordBtnDisappear} = this.props;
+        if (enableRecord === false) {
           return null;
         }
         if (this.props.identity === IdentityType.host && this.state.deviceType !== DeviceType.Touch) {
@@ -528,7 +529,9 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                     roomState={roomState}
                     ossConfigObj={this.state.ossConfigObj}
                     replayCallback={this.props.replayCallback}
+                    recordFunctionCallback={this.props.recordFunctionCallback}
                     room={this.state.room!}
+                    isRecordBtnDisappear={isRecordBtnDisappear}
                     uuid={this.props.uuid} rtc={this.props.rtc}
                     channelName={this.props.uuid}/>
             );

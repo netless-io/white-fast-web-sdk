@@ -31,6 +31,8 @@ export type WhiteboardRecordProps = {
     rtc?: RtcType;
     room: Room;
     replayCallback?: () => void;
+    recordFunctionCallback?: (data: any) => void;
+    isRecordBtnDisappear?: boolean;
 };
 
 @observer
@@ -49,8 +51,15 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
     }
 
     public componentDidMount(): void {
+        const {recordFunctionCallback} = this.props;
         roomStore.stopRecord = this.stopRecord;
         roomStore.startRecord = this.startRecord;
+        if (recordFunctionCallback) {
+            recordFunctionCallback({
+                startRecord: this.startRecord,
+                stopRecord: this.stopRecord,
+            });
+        }
     }
     private tick = (): void => {
         this.setState(({
@@ -249,7 +258,13 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                             secretKey: this.props.ossConfigObj.accessKeySecret,
                         },
                     );
-                    await this.recordOperator.acquire();
+                    // console.log(1122);
+                    try {
+                        await this.recordOperator.acquire();                        
+                    } catch (error) {
+                        console.log("acquire error:", error);
+                    }
+                    // console.log("recordOperator:", this.recordOperator);
                 }
             }
             if (isMediaRun) {
@@ -365,6 +380,10 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
         }
     }
     public render(): React.ReactNode {
+        const {isRecordBtnDisappear} = this.props
+        if (isRecordBtnDisappear === true) {
+            return null;
+        }
         return (
             <div>
                 {this.renderRecordBtn()}

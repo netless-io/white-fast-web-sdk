@@ -66,6 +66,9 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
         }
     }
 
+    private startRecord: () => Promise<void>;
+    private stopRecord: () => Promise<void>;
+
     private startJoinRoom = async (): Promise<void> => {
         const {userId, uuid, identityType} = this.props.match.params;
         const roomToken = await this.getRoomToken(uuid);
@@ -80,9 +83,6 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
                 },
                 exitRoomCallback: () => {
                     this.props.history.push("/");
-                },
-                recordDataCallback: (data: RecordDataType) => {
-                    this.setState({recordData: data});
                 },
                 replayCallback: () => {
                     this.handleReplayUrl();
@@ -102,6 +102,18 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
                 isManagerOpen: true,
                 ossUploadCallback: (e: any) => {
                     console.log(e);
+                },
+                isRecordBtnDisappear: true,
+                recordFunctionCallback: (e: any) => {
+                    (window as any).record = {
+                        startRecord: e.startRecord,
+                        stopRecord: e.stopRecord,
+                    };
+                    this.startRecord = e.startRecord;
+                    this.stopRecord = e.stopRecord;
+                },
+                recordDataCallback: (data: RecordDataType) => {
+                    this.setState({recordData: data});
                 },
                 documentArray: [
                     {

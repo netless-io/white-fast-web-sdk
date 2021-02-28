@@ -46,6 +46,7 @@ export class RecordOperator {
     }
 
     public async acquire(): Promise<void> {
+        console.log("agoraAppId: ", this.agoraAppId)
         const json = await this.fetcher.post<any>({
             path: `v1/apps/${this.agoraAppId}/cloud_recording/acquire`,
             headers: {
@@ -58,6 +59,7 @@ export class RecordOperator {
             },
         });
         const res = json as any;
+        console.log("res: ", res);
         if (typeof res.resourceId === "string") {
             this.resourceId = res.resourceId;
         } else {

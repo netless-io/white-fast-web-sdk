@@ -102,10 +102,12 @@ export type NetlessRoomProps = {
     exitRoomCallback?: () => void;
     replayCallback?: () => void;
     recordDataCallback?: (data: RecordDataType) => void;
+    recordFunctionCallback?: (data: any) => void;
     documentArrayCallback?: (data: PPTDataType[]) => void;
     isManagerOpen?: boolean | null;
     elementId: string;
     ossConfigObj?: OSSConfigObjType;
     ossUploadCallback?: (res: any) => void;
     enableRecord?: boolean;
+    isRecordBtnDisappear?: boolean;
 };
