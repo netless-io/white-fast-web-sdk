@@ -308,8 +308,13 @@ export class UploadManager {
                     }
                 },
             });
+            
         if (this.ossUploadCallback) {
-            this.ossUploadCallback(res);
+            const callback_data = {
+                ossRes:res,
+                file: rawFile,
+            };
+            this.ossUploadCallback(callback_data);
         }
         if (res.res.status === 200) {
             return this.getFile(path);

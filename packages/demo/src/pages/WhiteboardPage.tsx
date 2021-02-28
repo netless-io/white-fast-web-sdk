@@ -100,6 +100,9 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
                 language: "Chinese",
                 toolBarPosition: "left",
                 isManagerOpen: true,
+                ossUploadCallback: (e: any) => {
+                    console.log(e);
+                },
                 documentArray: [
                     {
                         active: false,
