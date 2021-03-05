@@ -107,7 +107,7 @@ export class UploadManager {
         onProgress?: PPTProgressListener,
     ): Promise<void> {
         const fileType = this.getFileType(rawFile.name);
-        const path = `/${folder}/${uuid}${fileType}`;
+        const path = `/${folder}/${uuidv4()}${fileType}`;
         const pptURL = await this.addFile(path, rawFile, onProgress);
         let res: PPT;
         if (kind === PPTKind.Static) {
@@ -308,7 +308,7 @@ export class UploadManager {
                     }
                 },
             });
-            
+
         if (this.ossUploadCallback) {
             const callback_data = {
                 ossRes:res,
