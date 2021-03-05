@@ -12,7 +12,7 @@ class PageError extends React.Component<{}, {}> {
                 <div className="page404-image-box">
                     <img className="page404-image-inner" src="https://white-sdk.oss-cn-beijing.aliyuncs.com/fast-sdk/icons/room_not_find.svg"/>
                     <div className="page404-inner">
-                        创建播放器失败，请检查网络！
+                        Failed to create player, please check network!
                     </div>
                     <Button
                         type="primary"
@@ -20,7 +20,7 @@ class PageError extends React.Component<{}, {}> {
                         className="page404-btn"
                         onClick={() => location.reload()}
                     >
-                       刷新重试
+                        The refresh retry
                     </Button>
                 </div>
             </div>

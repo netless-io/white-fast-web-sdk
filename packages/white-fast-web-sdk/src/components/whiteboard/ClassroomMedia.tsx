@@ -81,15 +81,15 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                     this.startRtc();
                     notification.close(key);
                 }}>
-                    确认加入
+                    Confirm to join
                 </Button>
             );
             if (this.props.classMode === ClassModeType.discuss) {
                 notification.open({
-                    message: `你好！${userId}`,
+                    message: `Hello!${userId}`,
                     duration: 8,
                     description:
-                        "此教室中老师已经开启视频通讯邀请，请确认是否加入。",
+                        "The teacher in this classroom has opened the video communication invitation, please confirm whether to join.",
                     icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                     btn,
                     key,
@@ -97,10 +97,10 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 });
             } else {
                 notification.open({
-                    message: `你好！${userId}`,
+                    message: `Hello! ${userId}`,
                     duration: 8,
                     description:
-                        "此教室中老师已经开启视频授课，请确认是否订阅。",
+                        "The teacher in this classroom has started the video lecture, please confirm whether to subscribe or not.",
                     icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                     btn,
                     key,
@@ -144,14 +144,14 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                         }
                         notification.close(key);
                     }}>
-                        确认加入
+                        Confirm to join
                     </Button>
                 );
                 notification.open({
-                    message: `你好！${this.props.userId}`,
+                    message: `Hello! ${this.props.userId}`,
                     duration: 8,
                     description:
-                        "此教室中老师开启自由讨论，请确认是否加入。",
+                        "The teachers in this classroom are open for free discussion. Please confirm whether you want to join.",
                     icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                     btn,
                     key,
@@ -163,9 +163,9 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
         if (this.props.isAllowHandUp !== nextProps.isAllowHandUp && nextProps.classMode === ClassModeType.lecture &&
             this.props.identity === IdentityType.guest) {
             if (nextProps.isAllowHandUp) {
-                message.info("老师开启举手，您可以点击右下角 [举手] 图标申请互动。");
+                message.info("The teacher starts to raise your hand, and you can click the [raise your hand] icon in the lower right corner to apply for interaction.");
             } else {
-                message.info("老师关闭举手。");
+                message.info("The teacher closed her hand.");
             }
         }
 
@@ -213,10 +213,10 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
             );
             if (this.props.classMode === ClassModeType.discuss) {
                 notification.open({
-                    message: `你好！${userId}`,
+                    message: `Hello! ${userId}`,
                     duration: 8,
                     description:
-                        "此教室中老师已经开启视频通讯邀请，请确认是否加入。",
+                        "The teacher in this classroom has opened the video communication invitation, please confirm whether to join.",
                     icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                     btn,
                     key,
@@ -224,10 +224,10 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 });
             } else {
                 notification.open({
-                    message: `你好！${userId}`,
+                    message: `Hello! ${userId}`,
                     duration: 8,
                     description:
-                        "此教室中老师已经开启视频授课，请确认是否订阅。",
+                        "The teacher in this classroom has started the video lecture, please confirm whether to subscribe or not.",
                     icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                     btn,
                     key,
@@ -469,7 +469,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 if (isVideoMute) {
                     this.setState({isCameraOpen: false});
                 } else {
-                    message.warning("关闭摄像头失败");
+                    message.warning("Failed to turn off camera");
                 }
             } else {
                 const isVideoMute = localStream.unmuteVideo();
@@ -477,7 +477,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 if (isVideoMute) {
                     this.setState({isCameraOpen: true});
                 } else {
-                    message.warning("打开摄像头失败");
+                    message.warning("Failed to open the camera.");
                 }
             }
 
@@ -494,7 +494,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 if (isAudioMute) {
                     this.setState({isMicrophoneOpen: false});
                 } else {
-                    message.warning("关闭麦克风失败");
+                    message.warning("Failed to close microphone");
                 }
             } else {
                 const isAudioMute = localStream.unmuteAudio();
@@ -502,7 +502,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 if (isAudioMute) {
                     this.setState({isMicrophoneOpen: true});
                 } else {
-                    message.warning("打开麦克风失败");
+                    message.warning("Failed to open microphone");
                 }
             }
 
@@ -580,14 +580,14 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                                                    this.stopRtc();
                                                    notification.close(key);
                                                }}>
-                                                   停止录制并关闭
+                                                   Stop recording and close
                                                </Button>
                                            );
                                            notification.open({
-                                               message: `关闭 RTC 提醒`,
+                                               message: `Turn off RTC reminders`,
                                                duration: 6,
                                                description:
-                                                   "您正开启录制服务，关闭 RTC 之前请先停止录制。否则视频和白板会录制时长不统一。",
+                                                   "You are starting recording service, please stop recording before closing RTC. Otherwise the video and the whiteboard will not record for the same length of time.",
                                                icon: <Icon type="smile" style={{ color: "#108ee9" }} />,
                                                btn,
                                                key,
@@ -704,7 +704,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                  console.log("AgoraRTC client init failed", err);
              });
         } else {
-            message.warning("请添加 rtc 配置，否则无法开启");
+            message.warning("Please add rtc configuration, otherwise it cannot be opened");
         }
     }
 

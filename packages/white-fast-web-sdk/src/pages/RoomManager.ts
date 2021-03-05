@@ -77,7 +77,7 @@ export class RoomManager {
                   };
                   this.room.disableCameraTransform = false;
                   this.room.setGlobalState({hostInfo: myHostInfo});
-                  message.success("您成为主持人");
+                  message.success("You become the host");
               }
           } else {
               const myHostInfo: HostUserType = {

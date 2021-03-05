@@ -70,7 +70,7 @@ export default class IndexPage extends React.Component<IndexPageProps, IndexPage
                                         size="large"
                                         onClick={this.handleWhiteboardClickBtn}
                                         className="name-button">
-                                        创建白板房间
+                                        Create a whiteboard room
                                     </Button>
                                 </div>
                             </TabPane>
@@ -85,7 +85,7 @@ export default class IndexPage extends React.Component<IndexPageProps, IndexPage
                                         disabled={!this.state.url}
                                         onClick={this.handleClickBtnUrl}
                                         className="name-button">
-                                        加入房间
+                                        To join the room
                                     </Button>
                                 </div>
                             </TabPane>

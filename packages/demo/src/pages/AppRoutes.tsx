@@ -15,7 +15,7 @@ export class AppRoutes extends React.Component<{}, {}> {
     }
 
     public componentDidCatch(error: any, inf: any): void {
-        message.error(`网页加载发生错误：${error}`);
+        message.error(`An error occurred while loading the page: ${error}`);
     }
     // 无国际化
     // public render(): React.ReactNode {

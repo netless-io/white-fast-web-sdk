@@ -88,7 +88,7 @@ class ToolBoxPaletteBox extends React.Component<ToolBoxPaletteBoxProps, ToolBoxP
                     </div>
                 );
             } else {
-                message.error(`${color}是非法颜色，无法被渲染。`);
+                message.error(`${color} is an illegal color and cannot be rendered.`);
                 return null;
             }
         });

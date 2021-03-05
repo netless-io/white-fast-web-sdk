@@ -803,7 +803,7 @@ class NetlessRoom extends React.Component<NetlessRoomProps, NetlessRoomStates> i
                             disableCameraTransform={disableCameraTransform}
                             room={room}/>}
                         {isReadOnly &&
-                        <div onClick={() => message.warning("老师正在讲课，屏幕被锁定。")} className="lock-icon">
+                        <div onClick={() => message.warning("The teacher is talking and the screen is locked.")} className="lock-icon">
                             <Icon type="lock"/>
                         </div>}
                     </div>

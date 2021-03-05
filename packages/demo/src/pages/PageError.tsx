@@ -12,7 +12,7 @@ export default class PageError extends React.Component<{}, {}> {
                 <div className="page404-image-box">
                     <img className="page404-image-inner" src={room_not_find}/>
                     <div className="page404-inner">
-                        您访问的页面不存在
+                        Sorry, the page you visit does not exists.
                     </div>
                 </div>
             </div>

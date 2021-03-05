@@ -180,7 +180,7 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                     const resp = await this.recordOperator.query();
                     if (resp.serverResponse.fileList) {
                         const res = await this.recordOperator.stop();
-                        message.info("结束录制");
+                        message.info("End recording");
                         roomStore.isRecording = false;
                         this.setRecordState(false);
                         const time =  new Date();
@@ -192,10 +192,10 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                         }
                         this.stopClock();
                     } else {
-                        message.info("录制时间过短");
+                        message.info("Recording time is too short");
                     }
                 } else {
-                    message.info("结束录制");
+                    message.info("End recording");
                     roomStore.isRecording = false;
                     const time =  new Date();
                     const timeStamp = time.getTime();
@@ -260,7 +260,7 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                     );
                     // console.log(1122);
                     try {
-                        await this.recordOperator.acquire();                        
+                        await this.recordOperator.acquire();
                     } catch (error) {
                         console.log("acquire error:", error);
                     }
@@ -270,7 +270,7 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
             if (isMediaRun) {
                 try {
                     await this.recordOperator.start();
-                    message.success("开始录制");
+                    message.success("Start recording");
                     this.setRecordState(true);
                     roomStore.isRecording = true;
                     const time =  new Date();
@@ -280,10 +280,10 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                     this.startClock();
                 } catch (err) {
                     console.log(err);
-                    message.error("录制错误");
+                    message.error("Recording error");
                 }
             } else {
-                message.success("开始录制");
+                message.success("Start recording");
                 roomStore.isRecording = true;
                 this.setRecordState(true);
                 const time =  new Date();
@@ -293,7 +293,7 @@ class WhiteboardRecord extends React.Component<WhiteboardRecordProps, Whiteboard
                 this.startClock();
             }
         } else {
-            message.warning("尚未添加 Rtc 相关配置");
+            message.warning("Rtc related configuration has not been added");
         }
     }
     public componentWillUnmount(): void {
