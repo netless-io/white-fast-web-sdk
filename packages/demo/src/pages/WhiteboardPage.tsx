@@ -97,7 +97,6 @@ export default class WhiteboardPage extends React.Component<WhiteboardPageProps,
                     },
                 },
                 identity: identityType, // 老师 "host" 学生 "listener",
-                language: "Chinese",
                 toolBarPosition: "left",
                 isManagerOpen: true,
                 ossUploadCallback: (e: any) => {

@@ -2,7 +2,7 @@ import {observable} from "mobx";
 import { LanguageEnum } from "../pages/NetlessRoomTypes";
 export class ProjectStore {
     @observable
-    public language: LanguageEnum = LanguageEnum.Chinese;
+    public language: LanguageEnum = LanguageEnum.English;
 
     public isEnglish(): boolean {
         if (this.language === LanguageEnum.Chinese) {
