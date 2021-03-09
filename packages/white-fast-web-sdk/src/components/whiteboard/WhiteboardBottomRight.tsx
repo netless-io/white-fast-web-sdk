@@ -216,7 +216,7 @@ class WhiteboardBottomRight extends React.Component<WhiteboardBottomRightProps, 
             const user = this.getSelfUserInfo();
             if (user) {
                 if (user.isReadOnly) {
-                    return <Tooltip title={user.isHandUp ? "收回举手请求" : "举手请求互动"}>
+                    return <Tooltip title={user.isHandUp ? "Withdraw a hand-raise request" : "Raise your hand to request interaction"}>
                         <div onClick={() => this.handleHandup(hostInfo.classMode, room, this.props.userId)}
                              className="manager-under-btn">
                             <img src={user.isHandUp ? handup_black : handup}/>

@@ -323,7 +323,7 @@ class WhiteboardManager extends React.Component<WhiteboardManagerProps, Whiteboa
             if (guestUsers && guestUsers.length > 0) {
                 const handUpGuestUsers = guestUsers.filter((guestUser: GuestUserType) => guestUser.isHandUp);
                 if (handUpGuestUsers && handUpGuestUsers.length > 0) {
-                    return "举手";
+                    return "raise hands";
                 } else {
                     return  null;
                 }

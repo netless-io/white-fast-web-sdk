@@ -146,13 +146,13 @@ class PlayerManager extends React.Component<PlayerManagerProps, PlayerManagerSta
     private handleModeText = (mode: ClassModeType) => {
         switch (mode) {
             case ClassModeType.discuss: {
-                return "自由讨论";
+                return "Interactive";
             }
             case ClassModeType.lecture: {
-                return "讲课模式";
+                return "Lecture";
             }
             default: {
-                return "举手问答";
+                return "Raise hand";
             }
         }
     }

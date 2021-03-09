@@ -170,8 +170,8 @@ class ExtendToolInner extends React.Component<ExtendToolInnerProps, ExtendToolIn
                                         showUploadList={false}
                                         customRequest={this.uploadVideo2}>
                                         <div className="extend-inner-icon">
-                                            视频<br/>
-                                            测试
+                                            video<br/>
+                                            test
                                         </div>
                                     </Upload>
                                 </Tooltip>

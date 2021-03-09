@@ -331,8 +331,8 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                             room.setGlobalState({hostInfo: {...hostInfo, isAllowHandUp: evt.target.value}});
                         }}
                     >
-                        <Radio.Button value={true}>{"允许举手"}</Radio.Button>
-                        <Radio.Button value={false}>{"禁止举手"}</Radio.Button>
+                        <Radio.Button value={true}>{"Allow to raise hands"}</Radio.Button>
+                        <Radio.Button value={false}>{"Raising hands is forbidden"}</Radio.Button>
                     </Radio.Group>
                 );
             } else {
@@ -346,25 +346,13 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
     private handleModeText = (classMode: ClassModeType) => {
         switch (classMode) {
             case ClassModeType.discuss: {
-                if (projectStore.isEnglish()) {
-                    return "Interactive";
-                } else {
-                    return "自由讨论";
-                }
+                return "Interactive";
             }
             case ClassModeType.lecture: {
-                if (projectStore.isEnglish()) {
-                    return "Lecture";
-                } else {
-                    return "讲课模式";
-                }
+                return "Lecture";
             }
             default: {
-                if (projectStore.isEnglish()) {
-                    return "Hand Up";
-                } else {
-                    return "举手问答";
-                }
+                return "Hand Up";
             }
         }
     }
