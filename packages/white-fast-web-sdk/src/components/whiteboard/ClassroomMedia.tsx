@@ -86,7 +86,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
             );
             if (this.props.classMode === ClassModeType.discuss) {
                 notification.open({
-                    message: `Hello!${userId}`,
+                    message: `Hello!`,
                     duration: 8,
                     description:
                         "The teacher in this classroom has opened the video communication invitation, please confirm whether to join.",
@@ -97,7 +97,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 });
             } else {
                 notification.open({
-                    message: `Hello! ${userId}`,
+                    message: `Hello!`,
                     duration: 8,
                     description:
                         "The teacher in this classroom has started the video lecture, please confirm whether to subscribe or not.",
@@ -148,7 +148,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                     </Button>
                 );
                 notification.open({
-                    message: `Hello! ${this.props.userId}`,
+                    message: `Hello!`,
                     duration: 8,
                     description:
                         "The teachers in this classroom are open for free discussion. Please confirm whether you want to join.",
@@ -208,12 +208,12 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                     this.startRtc();
                     notification.close(key);
                 }}>
-                    确认加入
+                    Confirm to join
                 </Button>
             );
             if (this.props.classMode === ClassModeType.discuss) {
                 notification.open({
-                    message: `Hello! ${userId}`,
+                    message: `Hello!`,
                     duration: 8,
                     description:
                         "The teacher in this classroom has opened the video communication invitation, please confirm whether to join.",
@@ -224,7 +224,7 @@ class ClassroomMedia extends React.Component<ClassroomMediaProps, ClassroomMedia
                 });
             } else {
                 notification.open({
-                    message: `Hello! ${userId}`,
+                    message: `Hello!`,
                     duration: 8,
                     description:
                         "The teacher in this classroom has started the video lecture, please confirm whether to subscribe or not.",
